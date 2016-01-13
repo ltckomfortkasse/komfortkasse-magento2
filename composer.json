@@ -1,6 +1,6 @@
 {
   "name": "ltc/komfortkasse",
-  "description": "A Magento 2 module that creates a new page",
+  "description": "Magento module for Komfortkasse",
   "type": "magento2-module",
   "version": "1.4.0-4",
   "require": {
