@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+  <default>
+    <sales>
+      <komfortkasse>
+        <activate_export>1</activate_export>
+        <activate_update>1</activate_update>
+        <payment_methods>banktransfer</payment_methods>
+        <status_open>pending</status_open>
+        <status_paid>processing</status_paid>
+        <status_cancelled>canceled</status_cancelled>
+        <status_open_invoice>complete</status_open_invoice>
+        <status_open_cod>processing</status_open_cod>
+      </komfortkasse>
+    </sales>
+  </default>
+</config>

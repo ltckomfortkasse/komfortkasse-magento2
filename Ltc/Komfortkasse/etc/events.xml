@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+  <event name="sales_order_place_after">
+    <observer name="ltc_komfortkasse_sales_order_place_after" instance="Ltc\Komfortkasse\Observer\NewOrder" />
+  </event>
+  <event name="sales_order_load_after">
+    <observer name="ltc_komfortkasse_sales_order_load_after" instance="Ltc\Komfortkasse\Observer\NoteOrderStatus" />
+  </event>
+  <event name="sales_order_save_after">
+    <observer name="ltc_komfortkasse_sales_order_save_after" instance="Ltc\Komfortkasse\Observer\CheckOrderStatus" />
+  </event>
+</config>

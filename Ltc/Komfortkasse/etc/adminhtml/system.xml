@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+  <system>
+    <section id="sales">
+      <group id="komfortkasse" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
+        <label>Komfortkasse</label>
+        <field id="activate_export" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>Export Orders</label>
+          <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+          <comment>Activate export of orders</comment>
+        </field>
+        <field id="activate_update" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>Update Orders</label>
+          <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+          <comment>Activate update of orders</comment>
+        </field>
+        
+        <field id="payment_methods" translate="label" type="multiselect" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>Prepayment: Payment Methods</label>
+          <source_model>Magento\Payment\Model\Config\Source\Allmethods</source_model>
+          <comment>All payment methods that should be exported for prepayment orders</comment>
+        </field>
+        <field id="status_open" translate="label" type="multiselect" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>Prepayment: Statuses Open</label>
+          <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
+          <comment>Order statuses that should be exported for prepayment orders (open orders)</comment>
+        </field>
+        <field id="status_paid" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>Prepayment: Status Paid</label>
+          <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
+          <comment>Order state that should be set when a payment has been received for a prepayment order</comment>
+        </field>
+        <field id="status_cancelled" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>Prepayment: Status Cancelled</label>
+          <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
+          <comment>Order state that should be set when a prepayment order has been cancelled</comment>
+        </field>
+        
+        <field id="payment_methods_invoice" translate="label" type="multiselect" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>Invoice: Payment Methods</label>
+          <source_model>Magento\Payment\Model\Config\Source\Allmethods</source_model>
+          <comment>All payment methods that should be exported for invoice orders</comment>
+        </field>
+        <field id="status_open_invoice" translate="label" type="multiselect" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>Invoice: Statuses Open</label>
+          <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
+          <comment>Order statuses that should be exported for invoice orders (open orders)</comment>
+        </field>
+        <field id="status_paid_invoice" translate="label" type="select" sortOrder="150" showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>Invoice: Status Paid</label>
+          <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
+          <comment>Order state that should be set when a invoice has been received for a prepayment order</comment>
+        </field>
+        <field id="status_cancelled_invoice" translate="label" type="select" sortOrder="160" showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>Invoice: Status no payment/debt collection</label>
+          <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
+          <comment>Order state that should be set when a invoice order has not been paid</comment>
+        </field>
+        
+        <field id="payment_methods_cod" translate="label" type="multiselect" sortOrder="230" showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>COD: Payment Methods</label>
+          <source_model>Magento\Payment\Model\Config\Source\Allmethods</source_model>
+          <comment>All payment methods that should be exported for COD (cash on delivery) orders</comment>
+        </field>
+        <field id="status_open_cod" translate="label" type="multiselect" sortOrder="240" showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>COD: Statuses Open</label>
+          <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
+          <comment>Order statuses that should be exported for COD (cash on delivery) orders (open orders)</comment>
+        </field>
+        <field id="status_paid_cod" translate="label" type="select" sortOrder="250" showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>COD: Status Paid</label>
+          <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
+          <comment>Order state that should be set when a payment has been received for a COD (cash on delivery) order</comment>
+        </field>
+        <field id="status_cancelled_cod" translate="label" type="select" sortOrder="260" showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>COD: Status Payment unresolved</label>
+          <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
+          <comment>Order state that should be set when a COD (cash on delivery) order has not been paid</comment>
+        </field>
+        
+        <field id="encryption" translate="label" type="select" sortOrder="1000" showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>Encryption</label>
+          <source_model>Ltc\Komfortkasse\Model\Source\Encryption</source_model>
+          <comment>Encryption technology. Do not change!</comment>
+        </field>
+        <field id="accesscode" translate="label" type="text" sortOrder="1010" showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>Access code</label>
+          <comment>Encrypted access code. Do not change!</comment>
+        </field>
+        <field id="apikey" translate="label" type="text" sortOrder="1020" showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>API key</label>
+          <comment>API key. Do not change!</comment>
+        </field>
+        <field id="publickey" translate="label" type="text" sortOrder="1030" showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>Secret Key 1</label>
+          <comment>Key for encrypting/decrypting data. Do not change!</comment>
+        </field>
+        <field id="privatekey" translate="label" type="text" sortOrder="1040" showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>Secret Key 2</label>
+          <comment>Key for encrypting/decrypting data. Do not change!</comment>
+        </field>
+        
+      </group>
+    </section>
+  </system>
+</config>
