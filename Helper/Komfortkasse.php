@@ -10,7 +10,7 @@ require_once 'Komfortkasse_Order.php';
  */
 class Komfortkasse
 {
-    const PLUGIN_VER = '1.4.2';
+    const PLUGIN_VER = '1.4.3';
     const MAXLEN_SSL = 117;
     const LEN_MCRYPT = 16;
 
@@ -391,8 +391,7 @@ class Komfortkasse
         ));
         
         // Development: http://localhost:8080/kkos01/api...
-        $result = @file_get_contents('http://localhost:8080/kkos01/api/shop/neworder.jsf', false, $context);
-        //$result = @file_get_contents('http://api.komfortkasse.eu/api/shop/neworder.jsf', false, $context);
+        $result = @file_get_contents('http://api.komfortkasse.eu/api/shop/neworder.jsf', false, $context);
     }
 
  // end notifyorder()
