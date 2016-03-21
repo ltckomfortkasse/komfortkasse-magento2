@@ -3,6 +3,7 @@
   "description": "Komfortkasse module for Magento 2. Automatically process payments by bank wire transfer, cash on delivery, and invoice.",
   "homepage": "https://komfortkasse.eu",
   "type": "magento2-module",
+  "license": "GPL-3.0",
   "authors": [
         {
             "name": "Komfortkasse Integration Team",
@@ -12,9 +13,10 @@
         }
     ],
   "support": {
-      "email": "support@komfortkasse.eu"
+      "email": "support@komfortkasse.eu",
+      "source": "https://github.com/komfortkasse/komfortkasse-magento2",
   },
-  "version": "1.4.3",
+  "version": "1.4.4.10",
   "require": {
     "php": "~5.5.0|~5.6.0|~7.0.0",
     "magento/framework": "~100.0"
