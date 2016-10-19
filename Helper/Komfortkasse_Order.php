@@ -8,7 +8,7 @@ namespace Ltc\Komfortkasse\Helper;
  * status: data type according to the shop system
  * delivery_ and billing_: _firstname, _lastname, _company, _street, _postcode, _city, _countrycode
  * products: an Array of item numbers
- * @version 1.6.3-Magento2
+ * @version 1.7.1-Magento2
  */
 
 
@@ -22,7 +22,7 @@ class Komfortkasse_Order
      */
     public static function getOpenIDs()
     {
-        $ret = array ();
+        $ret = [];
         $om = \Magento\Framework\App\ObjectManager::getInstance();
         foreach ($om->get('\Magento\Store\Model\StoreManagerInterface')->getWebsites() as $website) {
             foreach ($website->getGroups() as $group) {
@@ -30,7 +30,7 @@ class Komfortkasse_Order
                 foreach ($stores as $store) {
 
                     $store_id = $store->getId();
-                    $store_id_order = array ();
+                    $store_id_order = [];
                     $store_id_order ['store_id'] = $store_id;
 
                     if (!Komfortkasse_Config::getConfig(Komfortkasse_Config::activate_export, $store_id_order)) {
@@ -47,8 +47,7 @@ class Komfortkasse_Order
                         $paymentMethods = explode(',', $paymentMethods);
 
                         $salesModel = $om->create('\Magento\Sales\Model\Order');
-                        $salesCollection = $salesModel->getCollection()->addAttributeToFilter('status', array ('in' => $openOrders
-                        ))->addFieldToFilter('store_id', $store_id);
+                        $salesCollection = $salesModel->getCollection()->addAttributeToFilter('status', ['in' => $openOrders])->addFieldToFilter('store_id', $store_id);
 
                         foreach ($salesCollection as $order) {
                             try {
@@ -93,8 +92,7 @@ class Komfortkasse_Order
                         $paymentMethods = explode(',', $paymentMethods);
 
                         $salesModel = $om->create('\Magento\Sales\Model\Order');
-                        $salesCollection = $salesModel->getCollection()->addAttributeToFilter('status', array ('in' => $openOrders
-                        ))->addFieldToFilter('store_id', $store_id);
+                        $salesCollection = $salesModel->getCollection()->addAttributeToFilter('status', ['in' => $openOrders])->addFieldToFilter('store_id', $store_id);
 
                         foreach ($salesCollection as $order) {
                             try {
@@ -120,8 +118,7 @@ class Komfortkasse_Order
                         $paymentMethods = explode(',', $paymentMethods);
 
                         $salesModel = $om->create('\Magento\Sales\Model\Order');
-                        $salesCollection = $salesModel->getCollection()->addAttributeToFilter('status', array ('in' => $openOrders
-                        ))->addFieldToFilter('store_id', $store_id);
+                        $salesCollection = $salesModel->getCollection()->addAttributeToFilter('status', ['in' => $openOrders])->addFieldToFilter('store_id', $store_id);
 
                         foreach ($salesCollection as $order) {
                             try {
@@ -155,7 +152,7 @@ class Komfortkasse_Order
      */
     public static function getRefundIDs()
     {
-        $ret = array ();
+        $ret = [];
         $om = \Magento\Framework\App\ObjectManager::getInstance();
         foreach ($om->get('\Magento\Store\Model\StoreManagerInterface')->getWebsites() as $website) {
             foreach ($website->getGroups() as $group) {
@@ -163,7 +160,7 @@ class Komfortkasse_Order
                 foreach ($stores as $store) {
 
                     $store_id = $store->getId();
-                    $store_id_order = array ();
+                    $store_id_order = [];
                     $store_id_order ['store_id'] = $store_id;
 
                     if (!Komfortkasse_Config::getConfig(Komfortkasse_Config::activate_export, $store_id_order)) {
@@ -217,7 +214,7 @@ class Komfortkasse_Order
 
         $conf_general = $om->get('\Magento\Framework\App\Config\ScopeConfigInterface')->getValue('general', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
-        $ret = array ();
+        $ret = [];
         $ret ['number'] = $order->getIncrementId();
         $ret ['status'] = $order->getStatus();
         $ret ['date'] = date('d.m.Y', strtotime($order->getCreatedAt()));
@@ -312,7 +309,7 @@ class Komfortkasse_Order
             return null;
         }
 
-        $ret = array ();
+        $ret = [];
         $ret ['number'] = $creditMemo->getOrder()->getIncrementId();
         // Number of the Creditmemo.
         $ret ['customer_number'] = $creditMemo->getIncrementId();
@@ -346,12 +343,10 @@ class Komfortkasse_Order
         // Hint: PAID and CANCELLED are supported as of now.
         $order = $om->create('\Magento\Sales\Model\Order')->loadByIncrementId($order ['number']);
 
-        $om->get('\Magento\Framework\Event\Manager')->dispatch('komfortkasse_change_order_status_before', array ('order' => $order,'status' => $status,'callbackid' => $callbackid
-        ));
+        $om->get('\Magento\Framework\Event\Manager')->dispatch('komfortkasse_change_order_status_before', ['order' => $order,'status' => $status,'callbackid' => $callbackid]);
 
         $stateCollection = $om->create('\Magento\Sales\Model\Order\Status')->getCollection()->joinStates();
-        $stateCollection->addFieldToFilter('main_table.status', array ('like' => $status
-        ));
+        $stateCollection->addFieldToFilter('main_table.status', ['like' => $status]);
         $state = $stateCollection->getFirstItem()->getState();
 
         if ($state == 'processing' || $state == 'closed' || $state == 'complete') {
@@ -392,8 +387,7 @@ class Komfortkasse_Order
             $order->save();
         }
 
-        $om->get('\Magento\Framework\Event\Manager')->dispatch('komfortkasse_change_order_status_after', array ('order' => $order,'status' => $status,'callbackid' => $callbackid
-        ));
+        $om->get('\Magento\Framework\Event\Manager')->dispatch('komfortkasse_change_order_status_after', ['order' => $order,'status' => $status,'callbackid' => $callbackid]);
 
     }
 
@@ -419,7 +413,7 @@ class Komfortkasse_Order
         $creditMemo = $om->create('\Magento\Sales\Model\Order\Creditmemo')->load($id);
 
         $store_id = $creditMemo->getStoreId();
-        $store_id_order = array ();
+        $store_id_order = [];
         $store_id_order ['store_id'] = $store_id;
 
         if (!Komfortkasse_Config::getConfig(Komfortkasse_Config::activate_update, $store_id_order)) {
@@ -484,8 +478,7 @@ class Komfortkasse_Order
 
             // try Magento Standard
             if (!$pdfGenerated) {
-                $pdf = $om->create('\Magento\Sales\Model\Order\Pdf\Invoice')->getPdf(array ($invoice
-                ));
+                $pdf = $om->create('\Magento\Sales\Model\Order\Pdf\Invoice')->getPdf([($invoice)]);
                 $content = $pdf->render();
             }
 

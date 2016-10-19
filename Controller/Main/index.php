@@ -14,42 +14,42 @@ class Index extends \Magento\Framework\App\Action\Action
             $helper = $om->get('\Ltc\Komfortkasse\Helper\Komfortkasse');
             switch ($action) {
                 case 'info' :
-                    $helper->info();
+                    $this->getResponse()->setBody($helper->info());
                     break;
                 case 'init' :
-                    $helper->init();
+                    $this->getResponse()->setBody($helper->init());
                     break;
                 case 'test' :
-                    $helper->test();
+                    $this->getResponse()->setBody($helper->test());
                     break;
                 case 'readorders' :
-                    $helper->readorders();
+                    $this->getResponse()->setBody($helper->readorders());
                     break;
                 case 'updateorders' :
-                    $helper->updateorders();
+                    $this->getResponse()->setBody($helper->updateorders());
                     break;
                 case 'readrefunds' :
-                    $helper->readrefunds();
+                    $this->getResponse()->setBody($helper->readrefunds());
                     break;
                 case 'updaterefunds' :
-                    $helper->updaterefunds();
+                    $this->getResponse()->setBody($helper->updaterefunds());
                     break;
                 case 'readinvoicepdf' :
                     $content = $helper->readinvoicepdf();
                     if (!$content)
                         return;
-                    
+
                     $contentType = 'application/pdf';
                     $contentLength = strlen($content);
-                    
+
                     $this->getResponse()->setHttpResponseCode(200)->setHeader('Pragma', 'public', true)->setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0', true)->setHeader('Content-type', $contentType, true)->setHeader('Content-Length', $contentLength, true)->setHeader('Content-Disposition', 'attachment; filename="invoice.pdf"', true)->setHeader('Last-Modified', date('r'), true);
                     $this->getResponse()->setBody($content);
-                    
+
                     break;
                 default :
                     echo "Error: Unknwon action: $action";
             }
         }
-    
+
     }
 }

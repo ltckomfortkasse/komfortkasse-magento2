@@ -6,11 +6,10 @@ class Encryption implements \Magento\Framework\Option\ArrayInterface
 
     public function toOptionArray()
     {
-        return array (array ('value' => "openssl",'label' => __('OpenSSL Encryption (asynchronous)') 
-        ),array ('value' => "mcrypt",'label' => __('MCrypt Encryption (synchronous)') 
-        ),array ('value' => "base64",'label' => __('Base64 Encoding') 
-        ) 
-        );
-    
+        return [ ['value' => "openssl",'label' => __('OpenSSL Encryption (asynchronous)')],
+        ['value' => "mcrypt",'label' => __('MCrypt Encryption (synchronous)')],
+        ['value' => "base64",'label' => __('Base64 Encoding')]
+        ]
+        ;
     }
 }
