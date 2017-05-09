@@ -47,7 +47,7 @@ class Index extends \Magento\Framework\App\Action\Action
 
                     break;
                 default :
-                    echo "Error: Unknwon action: $action";
+                    $this->getResponse()->setBody("Error: Unknwon action: $action");
             }
         }
 
