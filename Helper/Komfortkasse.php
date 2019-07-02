@@ -11,7 +11,7 @@ require_once 'Komfortkasse_Order.php';
  */
 class Komfortkasse
 {
-    const PLUGIN_VER = '1.7.3';
+    const PLUGIN_VER = '1.8.1';
     const MAXLEN_SSL = 117;
     const LEN_MCRYPT = 16;
 
@@ -53,6 +53,7 @@ class Komfortkasse
      */
     public static function read($refunds)
     {
+
         if (!Komfortkasse_Config::getConfig(Komfortkasse_Config::activate_export)) {
             return;
         }
@@ -173,6 +174,7 @@ class Komfortkasse
         $ret .= ('encryption:');
         $encryptionstring = null;
         // Look for openssl encryption.
+
         if (extension_loaded('openssl') === true) {
 
             // Look for public&privatekey encryption.
@@ -299,8 +301,10 @@ class Komfortkasse
 
         $o = '';
         $lines = explode("\n", $param);
+
         foreach ($lines as $line) {
             $col = explode(';', $line);
+
             $count = Komfortkasse::mycount($col);
             $id = trim($col [0]);
             if ($count > 1) {
@@ -322,6 +326,7 @@ class Komfortkasse
             if ($refunds === true) {
                 Komfortkasse_Order::updateRefund($id, $status, $callbackid);
             } else {
+
                 $order = Komfortkasse_Order::getOrder($id);
                 if ($id != $order ['number']) {
                     continue;
@@ -329,6 +334,10 @@ class Komfortkasse
 
                 $newstatus = Komfortkasse::getNewStatus($status, $order);
                 if (empty($newstatus) === true) {
+                    if ($status == 'PAID' && method_exists(Komfortkasse_Order, 'setPaid')) {
+                        Komfortkasse_Order::setPaid($order, $callbackid);
+                        $o = $o . Komfortkasse::kk_csv($id);
+                    }
                     continue;
                 }
 
@@ -389,7 +398,9 @@ class Komfortkasse
      */
     public static function notifyorder($id)
     {
+        Komfortkasse_Config::log('notifyorder BEGIN');
         if (!Komfortkasse_Config::getConfig(Komfortkasse_Config::activate_export)) {
+            Komfortkasse_Config::log('notifyorder END: global config not active');
             return;
         }
 
@@ -397,10 +408,16 @@ class Komfortkasse
         $order['type'] = self::getOrderType($order);
 
         if (!Komfortkasse_Config::getConfig(Komfortkasse_Config::activate_export, $order)) {
+            Komfortkasse_Config::log('notifyorder END: order config not active');
             return;
         }
         // See if order is relevant.
         if (!self::isOpen($order)) {
+            Komfortkasse_Config::log('notifyorder END: order not open (1)');
+            return;
+        }
+        if (method_exists (Komfortkasse_Order, 'isOpen') && !Komfortkasse_Order::isOpen($order)) {
+            Komfortkasse_Config::log('notifyorder END: order not open (2)');
             return;
         }
 
@@ -419,7 +436,6 @@ class Komfortkasse
 
         // Development: http://localhost:8080/kkos01/api...
         $result = @file_get_contents('http://api.komfortkasse.eu/api/shop/neworder.jsf', false, $context);
-
     }
 
     // end notifyorder()
@@ -463,6 +479,7 @@ class Komfortkasse
      */
     protected static function getNewStatus($status, $order)
     {
+
         $orderType = self::getOrderType($order);
 
         switch ($orderType) {
@@ -655,15 +672,15 @@ class Komfortkasse
     {
         $key = Komfortkasse_Config::getConfig(Komfortkasse_Config::privatekey);
         $iv = Komfortkasse_Config::getConfig(Komfortkasse_Config::publickey);
-        $td = mcrypt_module_open('rijndael-128', ' ', 'cbc', $iv);
-        $init = mcrypt_generic_init($td, $key, $iv);
+        $td = call_user_func('mcrypt_module_open', 'rijndael-128', ' ', 'cbc', $iv);
+        $init = call_user_func('mcrypt_generic_init', $td, $key, $iv);
 
         $padlen = ((strlen($s) + Komfortkasse::LEN_MCRYPT) % Komfortkasse::LEN_MCRYPT);
         $s = str_pad($s, (strlen($s) + $padlen), ' ');
-        $encrypted = mcrypt_generic($td, $s);
+        $encrypted = call_user_func('mcrypt_generic', $td, $s);
 
-        mcrypt_generic_deinit($td);
-        mcrypt_module_close($td);
+        call_user_func('mcrypt_generic_deinit', $td);
+        call_user_func('mcrypt_module_close', $td);
 
         return Komfortkasse::mybase64_encode($encrypted);
 
@@ -698,7 +715,7 @@ class Komfortkasse
             }
 
             $ret = $ret . "\n" . Komfortkasse::mybase64_encode($encrypted);
-        } while ( $s );
+        } while ($s);
 
         openssl_free_key($key);
         return $ret;
@@ -755,21 +772,21 @@ class Komfortkasse
     {
         $key = Komfortkasse_Config::getConfig(Komfortkasse_Config::privatekey);
         $iv = Komfortkasse_Config::getConfig(Komfortkasse_Config::publickey);
-        $td = mcrypt_module_open('rijndael-128', ' ', 'cbc', $iv);
-        $init = mcrypt_generic_init($td, $key, $iv);
+        $td = call_user_func('mcrypt_module_open', 'rijndael-128', ' ', 'cbc', $iv);
+        $init = call_user_func('mcrypt_generic_init', $td, $key, $iv);
 
         $ret = '';
 
         $parts = explode("\n", $s);
         foreach ($parts as $part) {
             if ($part) {
-                $decrypted = mdecrypt_generic($td, Komfortkasse::mybase64_decode($part));
+                $decrypted = call_user_func('mdecrypt_generic', $td, Komfortkasse::mybase64_decode($part));
                 $ret = $ret . trim($decrypted);
             }
         }
 
-        mcrypt_generic_deinit($td);
-        mcrypt_module_close($td);
+        call_user_func('mcrypt_generic_deinit', $td);
+        call_user_func('mcrypt_module_close', $td);
         return $ret;
 
     }

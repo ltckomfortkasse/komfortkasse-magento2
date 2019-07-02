@@ -4,7 +4,7 @@ namespace Ltc\Komfortkasse\Helper;
 /**
  * Komfortkasse
  * Config Class
- * @version 1.7.2-Magento2 */
+ * @version 1.8.1-Magento2 */
 class Komfortkasse_Config
 {
     const activate_export = 'sales/komfortkasse/activate_export';
@@ -104,10 +104,9 @@ class Komfortkasse_Config
      */
     public static function getVersion()
     {
-        // return \Magento\Framework\App\ObjectManager::getInstance()->get('\Magento\Framework\Module\ModuleList')->getOne('Magento_Store')['setup_version'];
-        // return \Magento\Framework\AppInterface::VERSION;
-        $instance = new \Magento\Framework\App\ProductMetadata();
-        return $instance->getVersion();
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $productMetadata = $objectManager->get('Magento\Framework\App\ProductMetadataInterface');
+        return $productMetadata->getVersion();
     } // end getVersion()
 
 
@@ -125,4 +124,9 @@ class Komfortkasse_Config
     }
 
     // end output()
+
+    public static function log($s) {
+        // not using logging for now as logging cant be switched off per module
+    }
+
 }//end class
