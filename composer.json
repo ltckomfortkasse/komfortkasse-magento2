@@ -1,26 +1,27 @@
 {
-  "name": "ltc/komfortkasse",
-  "description": "Komfortkasse module for Magento 2. Automatically process payments by bank wire transfer, cash on delivery, and invoice.",
-  "homepage": "https://komfortkasse.eu",
-  "type": "magento2-module",
-  "license": "GPL-3.0",
-  "authors": [
-        {
-            "name": "Komfortkasse Integration Team",
-            "email": "integration@komfortkasse.eu",
-            "role": "Developer",
-	        "homepage": "https://komfortkasse.eu"
-        }
-    ],
-  "support": {
-      "email": "support@komfortkasse.eu",
-      "source": "https://github.com/ltckomfortkasse/komfortkasse-magento2"
-  },
-  "version": "1.8.1",
-  "autoload": {
-    "files": [ "registration.php" ],
-    "psr-4": {
-      "Ltc\\Komfortkasse\\": ""
-    }
-  }
+	"name" : "ltc/komfortkasse",
+	"description" : "Komfortkasse module for Magento 2. Automatically process payments by bank wire transfer, cash on delivery, and invoice.",
+	"homepage" : "https://komfortkasse.eu",
+	"type" : "magento2-module",
+	"license" : "GPL-3.0",
+	"authors" : [{
+			"name" : "Komfortkasse Integration Team",
+			"email" : "integration@komfortkasse.eu",
+			"role" : "Developer",
+			"homepage" : "https://komfortkasse.eu"
+		}
+	],
+	"support" : {
+		"email" : "support@komfortkasse.eu",
+		"source" : "https://github.com/ltckomfortkasse/komfortkasse-magento2"
+	},
+	"version" : "1.8.2",
+	"autoload" : {
+		"files" : [
+			"registration.php"
+		],
+		"psr-4" : {
+			"Ltc\\Komfortkasse\\" : ""
+		}
+	}
 }

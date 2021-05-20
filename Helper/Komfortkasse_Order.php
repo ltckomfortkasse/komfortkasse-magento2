@@ -8,7 +8,7 @@ namespace Ltc\Komfortkasse\Helper;
  * status: data type according to the shop system
  * delivery_ and billing_: _firstname, _lastname, _company, _street, _postcode, _city, _countrycode
  * products: an Array of item numbers
- * @version 1.7.1-Magento2
+ * @version 1.8.2-Magento2
  */
 
 
@@ -242,7 +242,12 @@ class Komfortkasse_Order
             $ret ['delivery_firstname'] = utf8_encode($shippingAddress->getFirstname());
             $ret ['delivery_lastname'] = utf8_encode($shippingAddress->getLastname());
             $ret ['delivery_company'] = utf8_encode($shippingAddress->getCompany());
-            $ret ['delivery_street'] = utf8_encode($shippingAddress->getStreetFull());
+            if (method_exists($shippingAddress, 'getStreetFull')) {
+                $ret ['delivery_street'] = utf8_encode($shippingAddress->getStreetFull());
+            } else if (method_exists($shippingAddress, 'getStreet')) {
+                $street = $shippingAddress->getStreet();
+                $ret ['delivery_street'] = utf8_encode($street[0]);
+            }
             $ret ['delivery_postcode'] = utf8_encode($shippingAddress->getPostcode());
             $ret ['delivery_city'] = utf8_encode($shippingAddress->getCity());
             $ret ['delivery_countrycode'] = utf8_encode($shippingAddress->getCountryId());
@@ -254,7 +259,12 @@ class Komfortkasse_Order
             $ret ['billing_firstname'] = utf8_encode($billingAddress->getFirstname());
             $ret ['billing_lastname'] = utf8_encode($billingAddress->getLastname());
             $ret ['billing_company'] = utf8_encode($billingAddress->getCompany());
-            $ret ['billing_street'] = utf8_encode($billingAddress->getStreetFull());
+            if (method_exists($billingAddress, 'getStreetFull')) {
+                $ret ['billing_street'] = utf8_encode($billingAddress->getStreetFull());
+            } else if (method_exists($billingAddress, 'getStreet')) {
+                $street = $billingAddress->getStreet();
+                $ret ['billing_street'] = utf8_encode($street[0]);
+            }
             $ret ['billing_postcode'] = utf8_encode($billingAddress->getPostcode());
             $ret ['billing_city'] = utf8_encode($billingAddress->getCity());
             $ret ['billing_countrycode'] = utf8_encode($billingAddress->getCountryId());
