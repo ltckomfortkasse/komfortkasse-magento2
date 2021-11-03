@@ -12,6 +12,11 @@ class Index extends \Magento\Framework\App\Action\Action
             $action = $params ['action'];
             $om = \Magento\Framework\App\ObjectManager::getInstance();
             $helper = $om->get('\Ltc\Komfortkasse\Helper\Komfortkasse');
+
+            // load other needed classes because include_once is not allowed
+            $om->get('\Ltc\Komfortkasse\Helper\Komfortkasse_Config');
+            $om->get('\Ltc\Komfortkasse\Helper\Komfortkasse_Order');
+
             switch ($action) {
                 case 'info' :
                     $this->getResponse()->setBody($helper->info());

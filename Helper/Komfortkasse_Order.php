@@ -468,8 +468,6 @@ class Komfortkasse_Order
         $om = \Magento\Framework\App\ObjectManager::getInstance();
 
         if ($invoiceNumber && $invoice = $om->create('\Magento\Sales\Model\Order\Invoice')->loadByIncrementId($invoiceNumber)) {
-            $fileName = $invoiceNumber . '.pdf';
-
             $pdfGenerated = false;
 
             // try easy pdf (www.easypdfinvoice.com) // TODO not available for magento2 as of now

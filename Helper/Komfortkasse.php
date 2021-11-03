@@ -2,8 +2,9 @@
 // namespace needed for magento2!
 namespace Ltc\Komfortkasse\Helper;
 
-require_once 'Komfortkasse_Config.php';
-require_once 'Komfortkasse_Order.php';
+// require_once is not allowed, classes are loaded in index.php
+// require_once 'Komfortkasse_Config.php';
+// require_once 'Komfortkasse_Order.php';
 
 /**
  * Komfortkasse
@@ -145,7 +146,7 @@ class Komfortkasse
 
         $ret .= 'accesskey:';
         // Set access code.
-        $hashed = md5(Komfortkasse_Config::getRequestParameter('accesscode'));
+        $hashed = hash('md5', Komfortkasse_Config::getRequestParameter('accesscode'));
         $current = Komfortkasse_Config::getConfig(Komfortkasse_Config::accesscode);
         if ($current != '' && $current !== 'undefined' && $current != $hashed) {
             $ret .= ('Access Code already set! Shop ' . $current . ', given (hash) ' . $hashed);
@@ -435,7 +436,7 @@ class Komfortkasse
         ));
 
         // Development: http://localhost:8080/kkos01/api...
-        $result = @file_get_contents('http://api.komfortkasse.eu/api/shop/neworder.jsf', false, $context);
+        $result = file_get_contents('https://ssl.komfortkasse.eu/api/shop/neworder.jsf', false, $context);
     }
 
     // end notifyorder()
@@ -523,7 +524,7 @@ class Komfortkasse
     {
         $ac = Komfortkasse_Config::getRequestParameter('accesscode');
 
-        if (!$ac || md5($ac) !== Komfortkasse_Config::getConfig(Komfortkasse_Config::accesscode)) {
+        if (!$ac || hash('md5', $ac) !== Komfortkasse_Config::getConfig(Komfortkasse_Config::accesscode)) {
             return false;
         } else {
             return true;
