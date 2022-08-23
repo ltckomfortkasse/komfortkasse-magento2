@@ -51,6 +51,9 @@ class Index extends \Magento\Framework\App\Action\Action
                     $this->getResponse()->setBody($content);
 
                     break;
+                case 'readconfig' :
+                    $this->getResponse()->setBody($helper->readconfig());
+                    break;
                 default :
                     $this->getResponse()->setBody("Error: Unknwon action: $action");
             }

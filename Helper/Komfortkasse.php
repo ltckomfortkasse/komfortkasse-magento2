@@ -12,7 +12,7 @@ namespace Ltc\Komfortkasse\Helper;
  */
 class Komfortkasse
 {
-    const PLUGIN_VER = '1.8.6';
+    const PLUGIN_VER = '1.9.5';
     const MAXLEN_SSL = 117;
     const LEN_MCRYPT = 16;
 
@@ -349,9 +349,14 @@ class Komfortkasse
                 }
 
                 // dont update if order is no longer relevant (will be marked as DISAPPEARED later on)
-                if (in_array($order ['number'], $openids) === false) {
-                    continue;
+                $updateOk = in_array($order ['number'], $openids);
+                if ($updateOk === false) {
+                    // setting from CANCELLED to PAID is allowed if not open
+                    if ($status == 'PAID' && $order['status'] == Komfortkasse::getNewStatus('CANCELLED', $order))
+                        $updateOk = true;
                 }
+                if ($updateOk === false)
+                    continue;
 
                 Komfortkasse_Order::updateOrder($order, $newstatus, $callbackid);
             }
@@ -407,7 +412,8 @@ class Komfortkasse
 
         $order = Komfortkasse_Order::getOrder($id);
         $order['type'] = self::getOrderType($order);
-
+        if (!$order['type'])
+            return;
         if (!Komfortkasse_Config::getConfig(Komfortkasse_Config::activate_export, $order)) {
             Komfortkasse_Config::log('notifyorder END: order config not active');
             return;
@@ -873,4 +879,22 @@ class Komfortkasse
         return Komfortkasse_Order::getInvoicePdf($invoiceNumber, $orderNumber);
 
     }
+
+    public static function readconfig()
+    {
+        $key = Komfortkasse_Config::getRequestParameter('confkey');
+        if (strpos($key, 'ACCESSCODE') !== false)
+            return null;
+        if (strpos($key, 'KEY') !== false)
+            return null;
+
+        $storeid = Komfortkasse_Config::getRequestParameter('storeid');
+
+        $order = null;
+        if ($storeid)
+            $order ['store_id'] = $storeid;
+
+        Komfortkasse_Config::output(Komfortkasse_Config::getConfig($key, $order));
+    }
+
 }
