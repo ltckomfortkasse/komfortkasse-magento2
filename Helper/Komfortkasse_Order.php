@@ -239,35 +239,35 @@ class Komfortkasse_Order
 
         $shippingAddress = $order->getShippingAddress();
         if ($shippingAddress) {
-            $ret ['delivery_firstname'] = utf8_encode($shippingAddress->getFirstname());
-            $ret ['delivery_lastname'] = utf8_encode($shippingAddress->getLastname());
-            $ret ['delivery_company'] = utf8_encode($shippingAddress->getCompany());
+            $ret ['delivery_firstname'] = self::myutf8_encode($shippingAddress->getFirstname());
+            $ret ['delivery_lastname'] = self::myutf8_encode($shippingAddress->getLastname());
+            $ret ['delivery_company'] = self::myutf8_encode($shippingAddress->getCompany());
             if (method_exists($shippingAddress, 'getStreetFull')) {
-                $ret ['delivery_street'] = utf8_encode($shippingAddress->getStreetFull());
+                $ret ['delivery_street'] = self::myutf8_encode($shippingAddress->getStreetFull());
             } else if (method_exists($shippingAddress, 'getStreet')) {
                 $street = $shippingAddress->getStreet();
-                $ret ['delivery_street'] = utf8_encode($street[0]);
+                $ret ['delivery_street'] = self::myutf8_encode($street[0]);
             }
-            $ret ['delivery_postcode'] = utf8_encode($shippingAddress->getPostcode());
-            $ret ['delivery_city'] = utf8_encode($shippingAddress->getCity());
-            $ret ['delivery_countrycode'] = utf8_encode($shippingAddress->getCountryId());
+            $ret ['delivery_postcode'] = self::myutf8_encode($shippingAddress->getPostcode());
+            $ret ['delivery_city'] = self::myutf8_encode($shippingAddress->getCity());
+            $ret ['delivery_countrycode'] = self::myutf8_encode($shippingAddress->getCountryId());
         }
 
         $billingAddress = $order->getBillingAddress();
         if ($billingAddress) {
             $ret ['language_code'] = substr($conf_general ['locale'] ['code'], 0, 2) . '-' . $billingAddress->getCountryId();
-            $ret ['billing_firstname'] = utf8_encode($billingAddress->getFirstname());
-            $ret ['billing_lastname'] = utf8_encode($billingAddress->getLastname());
-            $ret ['billing_company'] = utf8_encode($billingAddress->getCompany());
+            $ret ['billing_firstname'] = self::myutf8_encode($billingAddress->getFirstname());
+            $ret ['billing_lastname'] = self::myutf8_encode($billingAddress->getLastname());
+            $ret ['billing_company'] = self::myutf8_encode($billingAddress->getCompany());
             if (method_exists($billingAddress, 'getStreetFull')) {
-                $ret ['billing_street'] = utf8_encode($billingAddress->getStreetFull());
+                $ret ['billing_street'] = self::myutf8_encode($billingAddress->getStreetFull());
             } else if (method_exists($billingAddress, 'getStreet')) {
                 $street = $billingAddress->getStreet();
-                $ret ['billing_street'] = utf8_encode($street[0]);
+                $ret ['billing_street'] = self::myutf8_encode($street[0]);
             }
-            $ret ['billing_postcode'] = utf8_encode($billingAddress->getPostcode());
-            $ret ['billing_city'] = utf8_encode($billingAddress->getCity());
-            $ret ['billing_countrycode'] = utf8_encode($billingAddress->getCountryId());
+            $ret ['billing_postcode'] = self::myutf8_encode($billingAddress->getPostcode());
+            $ret ['billing_city'] = self::myutf8_encode($billingAddress->getCity());
+            $ret ['billing_countrycode'] = self::myutf8_encode($billingAddress->getCountryId());
         } else {
             $ret ['language_code'] = substr($conf_general ['locale'] ['code'], 0, 2);
         }
@@ -493,5 +493,9 @@ class Komfortkasse_Order
             return $content;
         }
 
+    }
+
+    private static function myutf8_encode($string) {
+        return $string === null ? null : utf8_encode($string);
     }
 }//end class

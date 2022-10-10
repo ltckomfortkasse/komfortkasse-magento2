@@ -4,7 +4,7 @@ namespace Ltc\Komfortkasse\Helper;
 /**
  * Komfortkasse
  * Config Class
- * @version 1.8.1-Magento2 */
+ * @version 1.9.5-Magento2 */
 class Komfortkasse_Config
 {
     const activate_export = 'sales/komfortkasse/activate_export';
@@ -71,7 +71,8 @@ class Komfortkasse_Config
         }
 
         $value = \Magento\Framework\App\ObjectManager::getInstance()->get('\Magento\Framework\App\Config\ScopeConfigInterface')->getValue($constantKey, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $store_id);
-
+        if ($value === null)
+            $value = ''; // to prevent Exception: Deprecated Functionality: str_replace(): Passing null to parameter #3 ($subject)
         return $value;
 
     }
