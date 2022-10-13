@@ -8,7 +8,7 @@ namespace Ltc\Komfortkasse\Helper;
  * status: data type according to the shop system
  * delivery_ and billing_: _firstname, _lastname, _company, _street, _postcode, _city, _countrycode
  * products: an Array of item numbers
- * @version 1.8.2-Magento2
+ * @version 1.9.6-Magento2
  */
 
 
@@ -204,12 +204,33 @@ class Komfortkasse_Order
      */
     public static function getOrder($number)
     {
+        if (empty($number) === true)
+            return null;
+
         /** @var \Magento\Framework\ObjectManagerInterface $om */
         $om = \Magento\Framework\App\ObjectManager::getInstance();
 
-        $order = $om->create('\Magento\Sales\Model\Order')->loadByIncrementId($number);
-        if (empty($number) === true || empty($order) === true || $number != $order->getIncrementId()) {
+        $isInvoiceNumber = str_starts_with($number, '{invoicenumber}');
+        if ($isInvoiceNumber)
+            $number = substr($number, strpos($number, '{invoicenumber}')+15);
+
+        if (empty($number) === true)
             return null;
+
+        $order = null;
+        if ($isInvoiceNumber) {
+            $invoice = $om->create('\Magento\Sales\Model\Order\Invoice')->loadByIncrementId($number);
+            if (empty($invoice) === true)
+                return null;
+            $order = $invoice->getOrder();
+            if (empty($order) === true)
+                return null;
+        } else {
+            $order = $om->create('\Magento\Sales\Model\Order')->loadByIncrementId($number);
+            if (empty($order) === true)
+                return null;
+            if ($number != $order->getIncrementId())
+                return null;
         }
 
         $conf_general = $om->get('\Magento\Framework\App\Config\ScopeConfigInterface')->getValue('general', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
@@ -251,6 +272,7 @@ class Komfortkasse_Order
             $ret ['delivery_postcode'] = self::myutf8_encode($shippingAddress->getPostcode());
             $ret ['delivery_city'] = self::myutf8_encode($shippingAddress->getCity());
             $ret ['delivery_countrycode'] = self::myutf8_encode($shippingAddress->getCountryId());
+            $ret ['delivery_phone'] = self::myutf8_encode($shippingAddress->getTelephone());
         }
 
         $billingAddress = $order->getBillingAddress();
@@ -268,6 +290,7 @@ class Komfortkasse_Order
             $ret ['billing_postcode'] = self::myutf8_encode($billingAddress->getPostcode());
             $ret ['billing_city'] = self::myutf8_encode($billingAddress->getCity());
             $ret ['billing_countrycode'] = self::myutf8_encode($billingAddress->getCountryId());
+            $ret ['billing_phone'] = self::myutf8_encode($billingAddress->getTelephone());
         } else {
             $ret ['language_code'] = substr($conf_general ['locale'] ['code'], 0, 2);
         }
@@ -466,33 +489,13 @@ class Komfortkasse_Order
     public static function getInvoicePdf($invoiceNumber)
     {
         $om = \Magento\Framework\App\ObjectManager::getInstance();
-
         if ($invoiceNumber && $invoice = $om->create('\Magento\Sales\Model\Order\Invoice')->loadByIncrementId($invoiceNumber)) {
-            $pdfGenerated = false;
-
-            // try easy pdf (www.easypdfinvoice.com) // TODO not available for magento2 as of now
-//             if (!$pdfGenerated) {
-//                 $pdfProModel = $om->create('pdfpro/order_invoice');
-//                 if ($pdfProModel !== false) {
-//                     $invoiceData = $pdfProModel->initInvoiceData($invoice);
-//                     $result = Mage::helper('pdfpro')->initPdf(array ($invoiceData
-//                     ));
-//                     if ($result ['success']) {
-//                         $content = $result ['content'];
-//                         $pdfGenerated = true;
-//                     }
-//                 }
-//             }
 
             // try Magento Standard
-            if (!$pdfGenerated) {
-                $pdf = $om->create('\Magento\Sales\Model\Order\Pdf\Invoice')->getPdf([($invoice)]);
-                $content = $pdf->render();
-            }
-
-            return $content;
+            $pdf = $om->create('\Magento\Sales\Model\Order\Pdf\Invoice')->getPdf([ ($invoice)
+            ]);
+            return $pdf->render();
         }
-
     }
 
     private static function myutf8_encode($string) {
