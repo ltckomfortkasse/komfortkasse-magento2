@@ -8,7 +8,7 @@ namespace Ltc\Komfortkasse\Helper;
  * status: data type according to the shop system
  * delivery_ and billing_: _firstname, _lastname, _company, _street, _postcode, _city, _countrycode
  * products: an Array of item numbers
- * @version 1.9.6-Magento2
+ * @version 1.9.7-Magento2
  */
 
 
@@ -490,6 +490,14 @@ class Komfortkasse_Order
     {
         $om = \Magento\Framework\App\ObjectManager::getInstance();
         if ($invoiceNumber && $invoice = $om->create('\Magento\Sales\Model\Order\Invoice')->loadByIncrementId($invoiceNumber)) {
+
+            $mm = $om->get('\Magento\Framework\Module\Manager');
+
+            // try mageplaza pdf invoice
+            if ($mm->isEnabled('Mageplaza_PdfInvoice')) {
+                $adminPdf = $om->get('\Mageplaza\PdfInvoice\Model\Api\AdminPdf');
+                return $adminPdf->getPdfInvoice($invoice->getId());
+            }
 
             // try Magento Standard
             $pdf = $om->create('\Magento\Sales\Model\Order\Pdf\Invoice')->getPdf([ ($invoice)
