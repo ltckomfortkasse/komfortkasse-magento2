@@ -12,7 +12,7 @@ namespace Ltc\Komfortkasse\Helper;
  */
 
 
-class Komfortkasse_Order
+class KomfortkasseOrder
 {
 
     /**
@@ -33,14 +33,14 @@ class Komfortkasse_Order
                     $store_id_order = [];
                     $store_id_order ['store_id'] = $store_id;
 
-                    if (!Komfortkasse_Config::getConfig(Komfortkasse_Config::activate_export, $store_id_order)) {
+                    if (!KomfortkasseConfig::getConfig(KomfortkasseConfig::activate_export, $store_id_order)) {
                         continue;
                     }
 
                     // PREPAYMENT
 
-                    $openOrders = Komfortkasse_Config::getConfig(Komfortkasse_Config::status_open, $store_id_order);
-                    $paymentMethods = Komfortkasse_Config::getConfig(Komfortkasse_Config::payment_methods, $store_id_order);
+                    $openOrders = KomfortkasseConfig::getConfig(KomfortkasseConfig::status_open, $store_id_order);
+                    $paymentMethods = KomfortkasseConfig::getConfig(KomfortkasseConfig::payment_methods, $store_id_order);
 
                     if (!empty($openOrders) && !empty($paymentMethods)) {
                         $openOrders = explode(',', $openOrders);
@@ -84,8 +84,8 @@ class Komfortkasse_Order
 
                     // INVOICE
 
-                    $openOrders = Komfortkasse_Config::getConfig(Komfortkasse_Config::status_open_invoice, $store_id_order);
-                    $paymentMethods = Komfortkasse_Config::getConfig(Komfortkasse_Config::payment_methods_invoice, $store_id_order);
+                    $openOrders = KomfortkasseConfig::getConfig(KomfortkasseConfig::status_open_invoice, $store_id_order);
+                    $paymentMethods = KomfortkasseConfig::getConfig(KomfortkasseConfig::payment_methods_invoice, $store_id_order);
 
                     if (!empty($openOrders) && !empty($paymentMethods)) {
                         $openOrders = explode(',', $openOrders);
@@ -110,8 +110,8 @@ class Komfortkasse_Order
 
                     // COD
 
-                    $openOrders = Komfortkasse_Config::getConfig(Komfortkasse_Config::status_open_cod, $store_id_order);
-                    $paymentMethods = Komfortkasse_Config::getConfig(Komfortkasse_Config::payment_methods_cod, $store_id_order);
+                    $openOrders = KomfortkasseConfig::getConfig(KomfortkasseConfig::status_open_cod, $store_id_order);
+                    $paymentMethods = KomfortkasseConfig::getConfig(KomfortkasseConfig::payment_methods_cod, $store_id_order);
 
                     if (!empty($openOrders) && !empty($paymentMethods)) {
                         $openOrders = explode(',', $openOrders);
@@ -163,13 +163,13 @@ class Komfortkasse_Order
                     $store_id_order = [];
                     $store_id_order ['store_id'] = $store_id;
 
-                    if (!Komfortkasse_Config::getConfig(Komfortkasse_Config::activate_export, $store_id_order)) {
+                    if (!KomfortkasseConfig::getConfig(KomfortkasseConfig::activate_export, $store_id_order)) {
                         continue;
                     }
 
-                    $paymentMethods = explode(',', Komfortkasse_Config::getConfig(Komfortkasse_Config::payment_methods, $store_id_order));
-                    $paymentMethods = array_merge($paymentMethods, explode(',', Komfortkasse_Config::getConfig(Komfortkasse_Config::payment_methods_cod, $store_id_order)));
-                    $paymentMethods = array_merge($paymentMethods, explode(',', Komfortkasse_Config::getConfig(Komfortkasse_Config::payment_methods_invoice, $store_id_order)));
+                    $paymentMethods = explode(',', KomfortkasseConfig::getConfig(KomfortkasseConfig::payment_methods, $store_id_order));
+                    $paymentMethods = array_merge($paymentMethods, explode(',', KomfortkasseConfig::getConfig(KomfortkasseConfig::payment_methods_cod, $store_id_order)));
+                    $paymentMethods = array_merge($paymentMethods, explode(',', KomfortkasseConfig::getConfig(KomfortkasseConfig::payment_methods_invoice, $store_id_order)));
 
                     $cmModel = $om->create('\Magento\Sales\Model\Order\Creditmemo');
                     $cmCollection = $cmModel->getCollection()->addFieldToFilter('store_id', $store_id);
@@ -310,11 +310,11 @@ class Komfortkasse_Order
         $reader = $om->get('\Magento\Framework\Module\Dir\Reader');
         $path = $reader->getModuleDir('', 'Ltc_Komfortkasse');
         $order_extension = false;
-        if (file_exists("{$path}/Helper/Komfortkasse_Order_Extension.php") === true) {
+        if (file_exists("{$path}/Helper/KomfortkasseOrderExtension.php") === true) {
             $order_extension = true;
         }
-        if ($order_extension && method_exists('Komfortkasse_Order_Extension', 'extendOrder') === true) {
-            $ret = Komfortkasse_Order_Extension::extendOrder($order, $ret);
+        if ($order_extension && method_exists('KomfortkasseOrderExtension', 'extendOrder') === true) {
+            $ret = KomfortkasseOrderExtension::extendOrder($order, $ret);
         }
 
         return $ret;
@@ -367,7 +367,7 @@ class Komfortkasse_Order
      */
     public static function updateOrder($order, $status, $callbackid)
     {
-        if (!Komfortkasse_Config::getConfig(Komfortkasse_Config::activate_update, $order)) {
+        if (!KomfortkasseConfig::getConfig(KomfortkasseConfig::activate_update, $order)) {
             return;
         }
 
@@ -449,7 +449,7 @@ class Komfortkasse_Order
         $store_id_order = [];
         $store_id_order ['store_id'] = $store_id;
 
-        if (!Komfortkasse_Config::getConfig(Komfortkasse_Config::activate_update, $store_id_order)) {
+        if (!KomfortkasseConfig::getConfig(KomfortkasseConfig::activate_update, $store_id_order)) {
             return;
         }
 

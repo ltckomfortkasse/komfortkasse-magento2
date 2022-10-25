@@ -14,8 +14,8 @@ class Index extends \Magento\Framework\App\Action\Action
             $helper = $om->get('\Ltc\Komfortkasse\Helper\Komfortkasse');
 
             // load other needed classes because include_once is not allowed
-            $om->get('\Ltc\Komfortkasse\Helper\Komfortkasse_Config');
-            $om->get('\Ltc\Komfortkasse\Helper\Komfortkasse_Order');
+            $om->get('\Ltc\Komfortkasse\Helper\KomfortkasseConfig');
+            $om->get('\Ltc\Komfortkasse\Helper\KomfortkasseOrder');
 
             switch ($action) {
                 case 'info' :

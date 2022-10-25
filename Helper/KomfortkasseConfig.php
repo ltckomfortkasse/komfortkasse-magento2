@@ -5,7 +5,7 @@ namespace Ltc\Komfortkasse\Helper;
  * Komfortkasse
  * Config Class
  * @version 1.9.5-Magento2 */
-class Komfortkasse_Config
+class KomfortkasseConfig
 {
     const activate_export = 'sales/komfortkasse/activate_export';
     const activate_update = 'sales/komfortkasse/activate_update';
