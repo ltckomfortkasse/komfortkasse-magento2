@@ -5,10 +5,15 @@ namespace Ltc\Komfortkasse\Controller\Main;
 class Index extends \Magento\Framework\App\Action\Action
 {
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Magento\Framework\App\ActionInterface::execute()
+     */
     public function execute()
     {
         $params = $this->getRequest()->getParams();
-        if (is_array($params) && sizeof($params) > 0 && $params ['action']) {
+        if (is_array($params) && count($params) > 0 && $params ['action']) {
             $action = $params ['action'];
             $om = \Magento\Framework\App\ObjectManager::getInstance();
             $helper = $om->get('\Ltc\Komfortkasse\Helper\Komfortkasse');
@@ -18,28 +23,28 @@ class Index extends \Magento\Framework\App\Action\Action
             $om->get('\Ltc\Komfortkasse\Helper\KomfortkasseOrder');
 
             switch ($action) {
-                case 'info' :
+                case 'info':
                     $this->getResponse()->setBody($helper->info());
                     break;
-                case 'init' :
+                case 'init':
                     $this->getResponse()->setBody($helper->init());
                     break;
-                case 'test' :
+                case 'test':
                     $this->getResponse()->setBody($helper->test());
                     break;
-                case 'readorders' :
+                case 'readorders':
                     $this->getResponse()->setBody($helper->readorders());
                     break;
-                case 'updateorders' :
+                case 'updateorders':
                     $this->getResponse()->setBody($helper->updateorders());
                     break;
-                case 'readrefunds' :
+                case 'readrefunds':
                     $this->getResponse()->setBody($helper->readrefunds());
                     break;
-                case 'updaterefunds' :
+                case 'updaterefunds':
                     $this->getResponse()->setBody($helper->updaterefunds());
                     break;
-                case 'readinvoicepdf' :
+                case 'readinvoicepdf':
                     $content = $helper->readinvoicepdf();
                     if (!$content)
                         return;
@@ -47,17 +52,20 @@ class Index extends \Magento\Framework\App\Action\Action
                     $contentType = 'application/pdf';
                     $contentLength = strlen($content);
 
-                    $this->getResponse()->setHttpResponseCode(200)->setHeader('Pragma', 'public', true)->setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0', true)->setHeader('Content-type', $contentType, true)->setHeader('Content-Length', $contentLength, true)->setHeader('Content-Disposition', 'attachment; filename="invoice.pdf"', true)->setHeader('Last-Modified', date('r'), true);
+                    $this->getResponse()->setHttpResponseCode(200)->setHeader('Pragma', 'public', true)->setHeader(
+                            'Cache-Control', 'must-revalidate, post-check=0, pre-check=0', true)->setHeader(
+                            'Content-type', $contentType, true)->setHeader('Content-Length', $contentLength, true)->setHeader(
+                            'Content-Disposition', 'attachment; filename="invoice.pdf"', true)->setHeader(
+                            'Last-Modified', date('r'), true);
                     $this->getResponse()->setBody($content);
 
                     break;
-                case 'readconfig' :
+                case 'readconfig':
                     $this->getResponse()->setBody($helper->readconfig());
                     break;
-                default :
+                default:
                     $this->getResponse()->setBody("Error: Unknwon action: $action");
             }
         }
-
     }
 }

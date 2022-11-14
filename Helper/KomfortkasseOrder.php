@@ -1,4 +1,5 @@
 <?php
+
 namespace Ltc\Komfortkasse\Helper;
 
 /**
@@ -8,10 +9,9 @@ namespace Ltc\Komfortkasse\Helper;
  * status: data type according to the shop system
  * delivery_ and billing_: _firstname, _lastname, _company, _street, _postcode, _city, _countrycode
  * products: an Array of item numbers
+ *
  * @version 1.9.7-Magento2
  */
-
-
 class KomfortkasseOrder
 {
 
@@ -22,7 +22,7 @@ class KomfortkasseOrder
      */
     public static function getOpenIDs()
     {
-        $ret = [];
+        $ret = [ ];
         $om = \Magento\Framework\App\ObjectManager::getInstance();
         foreach ($om->get('\Magento\Store\Model\StoreManagerInterface')->getWebsites() as $website) {
             foreach ($website->getGroups() as $group) {
@@ -30,7 +30,7 @@ class KomfortkasseOrder
                 foreach ($stores as $store) {
 
                     $store_id = $store->getId();
-                    $store_id_order = [];
+                    $store_id_order = [ ];
                     $store_id_order ['store_id'] = $store_id;
 
                     if (!KomfortkasseConfig::getConfig(KomfortkasseConfig::activate_export, $store_id_order)) {
@@ -47,7 +47,9 @@ class KomfortkasseOrder
                         $paymentMethods = explode(',', $paymentMethods);
 
                         $salesModel = $om->create('\Magento\Sales\Model\Order');
-                        $salesCollection = $salesModel->getCollection()->addAttributeToFilter('status', ['in' => $openOrders])->addFieldToFilter('store_id', $store_id);
+                        $salesCollection = $salesModel->getCollection()->addAttributeToFilter('status',
+                                [ 'in' => $openOrders
+                                ])->addFieldToFilter('store_id', $store_id);
 
                         foreach ($salesCollection as $order) {
                             try {
@@ -58,13 +60,15 @@ class KomfortkasseOrder
                                     $ret [] = $orderId;
                                 }
                             } catch ( \Exception $e ) {
-                                \Magento\Framework\App\ObjectManager::getInstance()->get('Psr\Log\LoggerInterface')->critical($e);
+                                \Magento\Framework\App\ObjectManager::getInstance()->get('Psr\Log\LoggerInterface')->critical(
+                                        $e);
                             }
                         }
 
                         // Add all orders with unpaid invoices (in case the invoice is created before shipping).
                         $invoiceModel = $om->create('\Magento\Sales\Model\Order\Invoice');
-                        $invoiceCollection = $invoiceModel->getCollection()->addAttributeToFilter('state', \Magento\Sales\Model\Order\Invoice::STATE_OPEN)->addFieldToFilter('store_id', $store_id);
+                        $invoiceCollection = $invoiceModel->getCollection()->addAttributeToFilter('state',
+                                \Magento\Sales\Model\Order\Invoice::STATE_OPEN)->addFieldToFilter('store_id', $store_id);
                         foreach ($invoiceCollection as $invoice) {
                             try {
                                 $order = $invoice->getOrder();
@@ -77,7 +81,8 @@ class KomfortkasseOrder
                                     }
                                 }
                             } catch ( \Exception $e ) {
-                                \Magento\Framework\App\ObjectManager::getInstance()->get('Psr\Log\LoggerInterface')->critical($e);
+                                \Magento\Framework\App\ObjectManager::getInstance()->get('Psr\Log\LoggerInterface')->critical(
+                                        $e);
                             }
                         }
                     }
@@ -85,14 +90,17 @@ class KomfortkasseOrder
                     // INVOICE
 
                     $openOrders = KomfortkasseConfig::getConfig(KomfortkasseConfig::status_open_invoice, $store_id_order);
-                    $paymentMethods = KomfortkasseConfig::getConfig(KomfortkasseConfig::payment_methods_invoice, $store_id_order);
+                    $paymentMethods = KomfortkasseConfig::getConfig(KomfortkasseConfig::payment_methods_invoice,
+                            $store_id_order);
 
                     if (!empty($openOrders) && !empty($paymentMethods)) {
                         $openOrders = explode(',', $openOrders);
                         $paymentMethods = explode(',', $paymentMethods);
 
                         $salesModel = $om->create('\Magento\Sales\Model\Order');
-                        $salesCollection = $salesModel->getCollection()->addAttributeToFilter('status', ['in' => $openOrders])->addFieldToFilter('store_id', $store_id);
+                        $salesCollection = $salesModel->getCollection()->addAttributeToFilter('status',
+                                [ 'in' => $openOrders
+                                ])->addFieldToFilter('store_id', $store_id);
 
                         foreach ($salesCollection as $order) {
                             try {
@@ -103,7 +111,8 @@ class KomfortkasseOrder
                                     $ret [] = $orderId;
                                 }
                             } catch ( \Exception $e ) {
-                                \Magento\Framework\App\ObjectManager::getInstance()->get('Psr\Log\LoggerInterface')->critical($e);
+                                \Magento\Framework\App\ObjectManager::getInstance()->get('Psr\Log\LoggerInterface')->critical(
+                                        $e);
                             }
                         }
                     }
@@ -111,14 +120,17 @@ class KomfortkasseOrder
                     // COD
 
                     $openOrders = KomfortkasseConfig::getConfig(KomfortkasseConfig::status_open_cod, $store_id_order);
-                    $paymentMethods = KomfortkasseConfig::getConfig(KomfortkasseConfig::payment_methods_cod, $store_id_order);
+                    $paymentMethods = KomfortkasseConfig::getConfig(KomfortkasseConfig::payment_methods_cod,
+                            $store_id_order);
 
                     if (!empty($openOrders) && !empty($paymentMethods)) {
                         $openOrders = explode(',', $openOrders);
                         $paymentMethods = explode(',', $paymentMethods);
 
                         $salesModel = $om->create('\Magento\Sales\Model\Order');
-                        $salesCollection = $salesModel->getCollection()->addAttributeToFilter('status', ['in' => $openOrders])->addFieldToFilter('store_id', $store_id);
+                        $salesCollection = $salesModel->getCollection()->addAttributeToFilter('status',
+                                [ 'in' => $openOrders
+                                ])->addFieldToFilter('store_id', $store_id);
 
                         foreach ($salesCollection as $order) {
                             try {
@@ -129,7 +141,8 @@ class KomfortkasseOrder
                                     $ret [] = $orderId;
                                 }
                             } catch ( \Exception $e ) {
-                                \Magento\Framework\App\ObjectManager::getInstance()->get('Psr\Log\LoggerInterface')->critical($e);
+                                \Magento\Framework\App\ObjectManager::getInstance()->get('Psr\Log\LoggerInterface')->critical(
+                                        $e);
                             }
                         }
                     }
@@ -137,13 +150,10 @@ class KomfortkasseOrder
             }
         }
 
-
         return $ret;
-
     }
 
     // end getOpenIDs()
-
 
     /**
      * Get refund IDS.
@@ -152,7 +162,7 @@ class KomfortkasseOrder
      */
     public static function getRefundIDs()
     {
-        $ret = [];
+        $ret = [ ];
         $om = \Magento\Framework\App\ObjectManager::getInstance();
         foreach ($om->get('\Magento\Store\Model\StoreManagerInterface')->getWebsites() as $website) {
             foreach ($website->getGroups() as $group) {
@@ -160,16 +170,23 @@ class KomfortkasseOrder
                 foreach ($stores as $store) {
 
                     $store_id = $store->getId();
-                    $store_id_order = [];
+                    $store_id_order = [ ];
                     $store_id_order ['store_id'] = $store_id;
 
                     if (!KomfortkasseConfig::getConfig(KomfortkasseConfig::activate_export, $store_id_order)) {
                         continue;
                     }
 
-                    $paymentMethods = explode(',', KomfortkasseConfig::getConfig(KomfortkasseConfig::payment_methods, $store_id_order));
-                    $paymentMethods = array_merge($paymentMethods, explode(',', KomfortkasseConfig::getConfig(KomfortkasseConfig::payment_methods_cod, $store_id_order)));
-                    $paymentMethods = array_merge($paymentMethods, explode(',', KomfortkasseConfig::getConfig(KomfortkasseConfig::payment_methods_invoice, $store_id_order)));
+                    $paymentMethods = explode(',',
+                            KomfortkasseConfig::getConfig(KomfortkasseConfig::payment_methods, $store_id_order));
+                    $paymentMethods = array_merge($paymentMethods,
+                            explode(',',
+                                    KomfortkasseConfig::getConfig(KomfortkasseConfig::payment_methods_cod,
+                                            $store_id_order)));
+                    $paymentMethods = array_merge($paymentMethods,
+                            explode(',',
+                                    KomfortkasseConfig::getConfig(KomfortkasseConfig::payment_methods_invoice,
+                                            $store_id_order)));
 
                     $cmModel = $om->create('\Magento\Sales\Model\Order\Creditmemo');
                     $cmCollection = $cmModel->getCollection()->addFieldToFilter('store_id', $store_id);
@@ -189,11 +206,9 @@ class KomfortkasseOrder
         }
 
         return $ret;
-
     }
 
     // end getRefundIDs()
-
 
     /**
      * Get order.
@@ -212,7 +227,7 @@ class KomfortkasseOrder
 
         $isInvoiceNumber = str_starts_with($number, '{invoicenumber}');
         if ($isInvoiceNumber)
-            $number = substr($number, strpos($number, '{invoicenumber}')+15);
+            $number = substr($number, strpos($number, '{invoicenumber}') + 15);
 
         if (empty($number) === true)
             return null;
@@ -233,9 +248,10 @@ class KomfortkasseOrder
                 return null;
         }
 
-        $conf_general = $om->get('\Magento\Framework\App\Config\ScopeConfigInterface')->getValue('general', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        $conf_general = $om->get('\Magento\Framework\App\Config\ScopeConfigInterface')->getValue('general',
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
-        $ret = [];
+        $ret = [ ];
         $ret ['number'] = $order->getIncrementId();
         $ret ['status'] = $order->getStatus();
         $ret ['date'] = date('d.m.Y', strtotime($order->getCreatedAt()));
@@ -252,8 +268,8 @@ class KomfortkasseOrder
             foreach ($order->getInvoiceCollection() as $invoice) {
                 $ret ['invoice_number'] [] = $invoice->getIncrementId();
                 $invoiceDate = date('d.m.Y', strtotime($invoice->getCreatedAt()));
-                if (!isset($ret['invoice_date']) || strtotime($ret['invoice_date']) < strtotime($invoiceDate)) {
-                    $ret['invoice_date'] = $invoiceDate;
+                if (!isset($ret ['invoice_date']) || strtotime($ret ['invoice_date']) < strtotime($invoiceDate)) {
+                    $ret ['invoice_date'] = $invoiceDate;
                 }
             }
         }
@@ -265,9 +281,9 @@ class KomfortkasseOrder
             $ret ['delivery_company'] = self::myutf8_encode($shippingAddress->getCompany());
             if (method_exists($shippingAddress, 'getStreetFull')) {
                 $ret ['delivery_street'] = self::myutf8_encode($shippingAddress->getStreetFull());
-            } else if (method_exists($shippingAddress, 'getStreet')) {
+            } elseif (method_exists($shippingAddress, 'getStreet')) {
                 $street = $shippingAddress->getStreet();
-                $ret ['delivery_street'] = self::myutf8_encode($street[0]);
+                $ret ['delivery_street'] = self::myutf8_encode($street [0]);
             }
             $ret ['delivery_postcode'] = self::myutf8_encode($shippingAddress->getPostcode());
             $ret ['delivery_city'] = self::myutf8_encode($shippingAddress->getCity());
@@ -283,9 +299,9 @@ class KomfortkasseOrder
             $ret ['billing_company'] = self::myutf8_encode($billingAddress->getCompany());
             if (method_exists($billingAddress, 'getStreetFull')) {
                 $ret ['billing_street'] = self::myutf8_encode($billingAddress->getStreetFull());
-            } else if (method_exists($billingAddress, 'getStreet')) {
+            } elseif (method_exists($billingAddress, 'getStreet')) {
                 $street = $billingAddress->getStreet();
-                $ret ['billing_street'] = self::myutf8_encode($street[0]);
+                $ret ['billing_street'] = self::myutf8_encode($street [0]);
             }
             $ret ['billing_postcode'] = self::myutf8_encode($billingAddress->getPostcode());
             $ret ['billing_city'] = self::myutf8_encode($billingAddress->getCity());
@@ -318,11 +334,9 @@ class KomfortkasseOrder
         }
 
         return $ret;
-
     }
 
     // end getOrder()
-
 
     /**
      * Get refund.
@@ -335,14 +349,15 @@ class KomfortkasseOrder
     {
         $om = \Magento\Framework\App\ObjectManager::getInstance();
         $resource = $om->get('\Magento\Framework\App\ResourceConnection');
-        $id = $resource->getConnection('default')->fetchOne('SELECT `entity_id` FROM `' . $resource->getTableName('sales_creditmemo') . "` WHERE `increment_id` = '" . $number . "'");
+        $id = $resource->getConnection('default')->fetchOne(
+                'SELECT `entity_id` FROM `' . $resource->getTableName('sales_creditmemo') . "` WHERE `increment_id` = '" . $number . "'");
 
         $creditMemo = $om->create('\Magento\Sales\Model\Order\Creditmemo')->load($id);
         if (empty($number) === true || empty($creditMemo) === true || $number != $creditMemo->getIncrementId()) {
             return null;
         }
 
-        $ret = [];
+        $ret = [ ];
         $ret ['number'] = $creditMemo->getOrder()->getIncrementId();
         // Number of the Creditmemo.
         $ret ['customer_number'] = $creditMemo->getIncrementId();
@@ -350,11 +365,9 @@ class KomfortkasseOrder
         $ret ['amount'] = $creditMemo->getGrandTotal();
 
         return $ret;
-
     }
 
     // end getRefund()
-
 
     /**
      * Update order.
@@ -376,14 +389,16 @@ class KomfortkasseOrder
         // Hint: PAID and CANCELLED are supported as of now.
         $order = $om->create('\Magento\Sales\Model\Order')->loadByIncrementId($order ['number']);
 
-        $om->get('\Magento\Framework\Event\Manager')->dispatch('komfortkasse_change_order_status_before', ['order' => $order,'status' => $status,'callbackid' => $callbackid]);
+        $om->get('\Magento\Framework\Event\Manager')->dispatch('komfortkasse_change_order_status_before',
+                [ 'order' => $order,'status' => $status,'callbackid' => $callbackid
+                ]);
 
         $stateCollection = $om->create('\Magento\Sales\Model\Order\Status')->getCollection()->joinStates();
-        $stateCollection->addFieldToFilter('main_table.status', ['like' => $status]);
+        $stateCollection->addFieldToFilter('main_table.status', [ 'like' => $status
+        ]);
         $state = $stateCollection->getFirstItem()->getState();
 
         if ($state == 'processing' || $state == 'closed' || $state == 'complete') {
-
             // If there is already an invoice, update the invoice, not the order.
             $invoiceColl = $order->getInvoiceCollection();
             if ($invoiceColl->getSize() > 0) {
@@ -398,14 +413,14 @@ class KomfortkasseOrder
 
                 if ($callbackid) {
                     $payment->setTransactionId($callbackid);
-                    $transaction = $payment->addTransaction(\Magento\Sales\Model\Order\Payment\Transaction::TYPE_CAPTURE);
+                    $transaction = $payment->addTransaction(
+                            \Magento\Sales\Model\Order\Payment\Transaction::TYPE_CAPTURE);
                 }
             }
 
             $history = $order->addStatusHistoryComment('' . $callbackid, $status);
             $order->save();
-        } else if ($state == 'canceled') {
-
+        } elseif ($state == 'canceled') {
             if ($callbackid) {
                 $history = $order->addStatusHistoryComment('' . $callbackid, $status);
             }
@@ -415,17 +430,16 @@ class KomfortkasseOrder
             $order->setStatus($status);
             $order->save();
         } else {
-
             $history = $order->addStatusHistoryComment('' . $callbackid, $status);
             $order->save();
         }
 
-        $om->get('\Magento\Framework\Event\Manager')->dispatch('komfortkasse_change_order_status_after', ['order' => $order,'status' => $status,'callbackid' => $callbackid]);
-
+        $om->get('\Magento\Framework\Event\Manager')->dispatch('komfortkasse_change_order_status_after',
+                [ 'order' => $order,'status' => $status,'callbackid' => $callbackid
+                ]);
     }
 
     // end updateOrder()
-
 
     /**
      * Update order.
@@ -441,12 +455,13 @@ class KomfortkasseOrder
         $om = \Magento\Framework\App\ObjectManager::getInstance();
 
         $resource = $om->get('\Magento\Framework\App\ResourceConnection');
-        $id = $resource->getConnection('default')->fetchOne('SELECT `entity_id` FROM `' . $resource->getTableName('sales_creditmemo') . "` WHERE `increment_id` = '" . $refundIncrementId . "'");
+        $id = $resource->getConnection('default')->fetchOne(
+                'SELECT `entity_id` FROM `' . $resource->getTableName('sales_creditmemo') . "` WHERE `increment_id` = '" . $refundIncrementId . "'");
 
         $creditMemo = $om->create('\Magento\Sales\Model\Order\Creditmemo')->load($id);
 
         $store_id = $creditMemo->getStoreId();
-        $store_id_order = [];
+        $store_id_order = [ ];
         $store_id_order ['store_id'] = $store_id;
 
         if (!KomfortkasseConfig::getConfig(KomfortkasseConfig::activate_update, $store_id_order)) {
@@ -460,11 +475,9 @@ class KomfortkasseOrder
         $history = $creditMemo->addComment($status . ' [' . $callbackid . ']', false, false);
 
         $creditMemo->save();
-
     }
 
     // end updateRefund()
-
 
     /**
      * Call an object's save method
@@ -476,20 +489,17 @@ class KomfortkasseOrder
     private static function mysave($object)
     {
         $object->save();
-
     }
-
 
     public static function getInvoicePdfPrepare()
     {
-
     }
-
 
     public static function getInvoicePdf($invoiceNumber)
     {
         $om = \Magento\Framework\App\ObjectManager::getInstance();
-        if ($invoiceNumber && $invoice = $om->create('\Magento\Sales\Model\Order\Invoice')->loadByIncrementId($invoiceNumber)) {
+        if ($invoiceNumber && $invoice = $om->create('\Magento\Sales\Model\Order\Invoice')->loadByIncrementId(
+                $invoiceNumber)) {
 
             $mm = $om->get('\Magento\Framework\Module\Manager');
 
@@ -506,7 +516,8 @@ class KomfortkasseOrder
         }
     }
 
-    private static function myutf8_encode($string) {
+    private static function myutf8_encode($string)
+    {
         return $string === null ? null : utf8_encode($string);
     }
 }//end class

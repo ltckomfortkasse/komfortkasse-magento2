@@ -11,7 +11,11 @@ namespace Ltc\Komfortkasse\Observer;
 class NewOrder extends AbstractRegObserver
 {
 
-
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Magento\Framework\Event\ObserverInterface::execute()
+     */
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
         $regName = $this->getRegName($observer);
@@ -19,6 +23,5 @@ class NewOrder extends AbstractRegObserver
             $registry = \Magento\Framework\App\ObjectManager::getInstance()->get('\Magento\Framework\Registry');
             $registry->register($regName, '_new');
         }
-    
     }
 }

@@ -12,7 +12,7 @@ namespace Ltc\Komfortkasse\Helper;
  */
 class Komfortkasse
 {
-    const PLUGIN_VER = '1.9.8';
+    const PLUGIN_VER = '1.9.9';
     const MAXLEN_SSL = 117;
     const LEN_MCRYPT = 16;
 
@@ -423,7 +423,7 @@ class Komfortkasse
             KomfortkasseConfig::log('notifyorder END: order not open (1)');
             return;
         }
-        if (method_exists (KomfortkasseOrder, 'isOpen') && !KomfortkasseOrder::isOpen($order)) {
+        if (method_exists ('KomfortkasseOrder', 'isOpen') && !KomfortkasseOrder::isOpen($order)) {
             KomfortkasseConfig::log('notifyorder END: order not open (2)');
             return;
         }
@@ -435,7 +435,7 @@ class Komfortkasse
         $query = http_build_query(array ('q' => $queryEnc,'hash' => KomfortkasseConfig::getConfig(KomfortkasseConfig::accesscode, $order),'key' => KomfortkasseConfig::getConfig(KomfortkasseConfig::apikey, $order)
         ));
 
-        $contextData = array ('method' => 'POST','timeout' => 2,'header' => "Connection: close\r\n" . 'Content-Length: ' . strlen($query) . "\r\n",'content' => $query
+        $contextData = array ('method' => 'POST','timeout' => 2,'header' => "Content-Type: application/x-www-form-urlencoded\r\n". "Connection: close\r\n" . 'Content-Length: ' . strlen($query) . "\r\n",'content' => $query
         );
 
         $context = stream_context_create(array ('http' => $contextData

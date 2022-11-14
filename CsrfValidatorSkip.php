@@ -2,9 +2,11 @@
 
 namespace Ltc\Komfortkasse;
 
+/**
+ * disable CSRF checks for komfortkasse calls
+ */
 class CsrfValidatorSkip
 {
-
 
     /**
      *

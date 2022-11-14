@@ -15,7 +15,7 @@
 		"email" : "support@komfortkasse.eu",
 		"source" : "https://github.com/ltckomfortkasse/komfortkasse-magento2"
 	},
-	"version" : "1.9.8",
+	"version" : "1.9.9",
 	"autoload" : {
 		"files" : [
 			"registration.php"

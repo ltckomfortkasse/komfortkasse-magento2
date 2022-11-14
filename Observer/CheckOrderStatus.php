@@ -11,6 +11,11 @@ namespace Ltc\Komfortkasse\Observer;
 class CheckOrderStatus extends AbstractRegObserver
 {
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Magento\Framework\Event\ObserverInterface::execute()
+     */
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
         $registry = \Magento\Framework\App\ObjectManager::getInstance()->get('\Magento\Framework\Registry');
@@ -25,6 +30,5 @@ class CheckOrderStatus extends AbstractRegObserver
 
             $registry->unregister($regName);
         }
-
     }
 }

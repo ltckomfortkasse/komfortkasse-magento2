@@ -1,10 +1,13 @@
 <?php
+
 namespace Ltc\Komfortkasse\Helper;
 
 /**
  * Komfortkasse
  * Config Class
- * @version 1.9.5-Magento2 */
+ *
+ * @version 1.9.5-Magento2
+ */
 class KomfortkasseConfig
 {
     const activate_export = 'sales/komfortkasse/activate_export';
@@ -27,10 +30,8 @@ class KomfortkasseConfig
     const publickey = 'sales/komfortkasse/publickey';
     const privatekey = 'sales/komfortkasse/privatekey';
 
-
     /**
      * Set Config.
-     *
      *
      * @param string $constantKey Constant Key
      * @param string $value Value
@@ -40,28 +41,26 @@ class KomfortkasseConfig
     public static function setConfig($constantKey, $value)
     {
         $om = \Magento\Framework\App\ObjectManager::getInstance();
-        $om->get('\Magento\Config\Model\ResourceModel\Config')->saveConfig($constantKey, $value, \Magento\Framework\App\Config\ScopeConfigInterface::SCOPE_TYPE_DEFAULT, 0);
+        $om->get('\Magento\Config\Model\ResourceModel\Config')->saveConfig($constantKey, $value,
+                \Magento\Framework\App\Config\ScopeConfigInterface::SCOPE_TYPE_DEFAULT, 0);
         $om->get('\Magento\Framework\App\ReinitableConfig')->reinit();
         $om->get('\Magento\Store\Model\StoreManagerInterface')->reinitStores();
-
     }
 
- // end setConfig()
-
+    // end setConfig()
 
     /**
      * Get Config.
-     *
      *
      * @param string $constantKey Constant Key
      *
      * @return mixed
      */
-    public static function getConfig($constantKey, $order=null)
+    public static function getConfig($constantKey, $order = null)
     {
         $store_id = null;
         if ($order != null) {
-            $store_id = $order['store_id'];
+            $store_id = $order ['store_id'];
         } else {
             // export und update werden in den getId Methoden nochmals extra ber�cksichtigt.
             if ($constantKey == self::activate_export)
@@ -70,19 +69,18 @@ class KomfortkasseConfig
                 return true;
         }
 
-        $value = \Magento\Framework\App\ObjectManager::getInstance()->get('\Magento\Framework\App\Config\ScopeConfigInterface')->getValue($constantKey, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $store_id);
+        $value = \Magento\Framework\App\ObjectManager::getInstance()->get(
+                '\Magento\Framework\App\Config\ScopeConfigInterface')->getValue($constantKey,
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $store_id);
         if ($value === null)
             $value = ''; // to prevent Exception: Deprecated Functionality: str_replace(): Passing null to parameter #3 ($subject)
         return $value;
-
     }
 
- // end getConfig()
-
+    // end getConfig()
 
     /**
      * Get Request Parameter.
-     *gut
      *
      * @param string $key Key
      *
@@ -90,16 +88,15 @@ class KomfortkasseConfig
      */
     public static function getRequestParameter($key)
     {
-        return urldecode(\Magento\Framework\App\ObjectManager::getInstance()->get('\Magento\Framework\App\Request\Http')->getParam($key));
-
+        return urldecode(
+                \Magento\Framework\App\ObjectManager::getInstance()->get('\Magento\Framework\App\Request\Http')->getParam(
+                        $key));
     }
 
- // end getRequestParameter()
-
+    // end getRequestParameter()
 
     /**
      * Get Magento Version.
-     *
      *
      * @return string
      */
@@ -108,9 +105,9 @@ class KomfortkasseConfig
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $productMetadata = $objectManager->get('Magento\Framework\App\ProductMetadataInterface');
         return $productMetadata->getVersion();
-    } // end getVersion()
+    }
 
-
+    // end getVersion()
 
     /**
      * Output
@@ -121,13 +118,11 @@ class KomfortkasseConfig
     {
         // do nothing, just return $s. output has to be done in Controller/Main/index.php
         return $s;
-
     }
 
     // end output()
-
-    public static function log($s) {
+    public static function log($s)
+    {
         // not using logging for now as logging cant be switched off per module
     }
-
 }//end class
