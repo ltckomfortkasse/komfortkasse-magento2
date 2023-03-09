@@ -12,7 +12,7 @@ namespace Ltc\Komfortkasse\Helper;
  */
 class Komfortkasse
 {
-    const PLUGIN_VER = '1.9.9';
+    const PLUGIN_VER = '1.9.10';
     const MAXLEN_SSL = 117;
     const LEN_MCRYPT = 16;
 
@@ -90,6 +90,9 @@ class Komfortkasse
                     $order = KomfortkasseOrder::getRefund($id);
                 } else {
                     $order = KomfortkasseOrder::getOrder($id);
+                    if (!$order) {
+                        continue;
+                    }
                     if ($order['payment_method'])
                         $order['type'] = self::getOrderType($order);
                 }
@@ -329,6 +332,9 @@ class Komfortkasse
             } else {
 
                 $order = KomfortkasseOrder::getOrder($id);
+                if (!$order) {
+                    continue;
+                }
                 if ($id != $order ['number']) {
                     continue;
                 }
@@ -411,6 +417,9 @@ class Komfortkasse
         }
 
         $order = KomfortkasseOrder::getOrder($id);
+        if (!$order) {
+            return;
+        }
         $order['type'] = self::getOrderType($order);
         if (!$order['type'])
             return;
