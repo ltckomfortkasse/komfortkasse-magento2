@@ -12,7 +12,7 @@ namespace Ltc\Komfortkasse\Helper;
  */
 class Komfortkasse
 {
-    const PLUGIN_VER = '1.9.10';
+    const PLUGIN_VER = '1.9.11';
     const MAXLEN_SSL = 117;
     const LEN_MCRYPT = 16;
 
@@ -733,7 +733,8 @@ class Komfortkasse
             $ret = $ret . "\n" . Komfortkasse::mybase64_encode($encrypted);
         } while ($s);
 
-        openssl_free_key($key);
+        if (PHP_VERSION_ID < 80000)
+            openssl_free_key($key);
         return $ret;
 
     }
@@ -769,7 +770,8 @@ class Komfortkasse
             }
         }
 
-        openssl_free_key($key);
+        if (PHP_VERSION_ID < 80000)
+            openssl_free_key($key);
         return $ret;
 
     }
