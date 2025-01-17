@@ -10,7 +10,7 @@ namespace Ltc\Komfortkasse\Helper;
  * delivery_ and billing_: _firstname, _lastname, _company, _street, _postcode, _city, _countrycode
  * products: an Array of item numbers
  *
- * @version 1.9.7-Magento2
+ * @version 1.9.12-Magento2
  */
 class KomfortkasseOrder
 {
@@ -254,7 +254,8 @@ class KomfortkasseOrder
         $ret = [ ];
         $ret ['number'] = $order->getIncrementId();
         $ret ['status'] = $order->getStatus();
-        $ret ['date'] = date('d.m.Y', strtotime($order->getCreatedAt()));
+        if ($order->getCreatedAt())
+            $ret ['date'] = date('d.m.Y', strtotime($order->getCreatedAt()));
         $ret ['email'] = $order->getCustomerEmail();
         $ret ['customer_number'] = $order->getCustomerId();
         $ret ['payment_method'] = $order->getPayment() == null ? null : ($order->getPayment()->getMethodInstance() == null ? null : $order->getPayment()->getMethodInstance()->getCode());
@@ -399,15 +400,10 @@ class KomfortkasseOrder
         $state = $stateCollection->getFirstItem()->getState();
 
         if ($state == 'processing' || $state == 'closed' || $state == 'complete') {
-            // If there is already an invoice, update the invoice, not the order.
+            // If there is no invoice, capture() will create an invoice. If there is already an invoice, update the invoice.
+
             $invoiceColl = $order->getInvoiceCollection();
-            if ($invoiceColl->getSize() > 0) {
-                foreach ($order->getInvoiceCollection() as $invoice) {
-                    $invoice->pay();
-                    $invoice->addComment($callbackid, false, false);
-                    self::mysave($invoice);
-                }
-            } else {
+            if ($invoiceColl->getSize() == 0) {
                 $payment = $order->getPayment();
                 $payment->capture(null);
 
@@ -416,7 +412,36 @@ class KomfortkasseOrder
                     $transaction = $payment->addTransaction(
                             \Magento\Sales\Model\Order\Payment\Transaction::TYPE_CAPTURE);
                 }
+
+                $order->save();
+                $invoiceColl = $order->getInvoiceCollection();
             }
+
+            if ($invoiceColl->getSize() > 0) {
+                foreach ($order->getInvoiceCollection() as $invoice) {
+                    $invoice->pay();
+                    $invoice->addComment($callbackid, false, false);
+                    self::mysave($invoice);
+                }
+            }
+
+//             $invoiceColl = $order->getInvoiceCollection();
+//             if ($invoiceColl->getSize() > 0) {
+//                 foreach ($order->getInvoiceCollection() as $invoice) {
+//                     $invoice->pay();
+//                     $invoice->addComment($callbackid, false, false);
+//                     self::mysave($invoice);
+//                 }
+//             } else {
+//                 $payment = $order->getPayment();
+//                 $payment->capture(null);
+
+//                 if ($callbackid) {
+//                     $payment->setTransactionId($callbackid);
+//                     $transaction = $payment->addTransaction(
+//                             \Magento\Sales\Model\Order\Payment\Transaction::TYPE_CAPTURE);
+//                 }
+//             }
 
             $history = $order->addStatusHistoryComment('' . $callbackid, $status);
             $order->save();
@@ -428,9 +453,14 @@ class KomfortkasseOrder
                 $order->cancel();
             }
             $order->setStatus($status);
+            $order->setState($state);
             $order->save();
         } else {
-            $history = $order->addStatusHistoryComment('' . $callbackid, $status);
+            if ($callbackid) {
+                $history = $order->addStatusHistoryComment('' . $callbackid, $status);
+            }
+            $order->setStatus($status);
+            $order->setState($state);
             $order->save();
         }
 
