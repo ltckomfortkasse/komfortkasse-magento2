@@ -548,6 +548,6 @@ class KomfortkasseOrder
 
     private static function myutf8_encode($string)
     {
-        return $string === null ? null : utf8_encode($string);
+        return $string === null ? null : mb_convert_encoding($string, "UTF-8", mb_detect_encoding($string));
     }
 }//end class

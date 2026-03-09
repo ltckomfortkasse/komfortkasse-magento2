@@ -12,7 +12,7 @@ namespace Ltc\Komfortkasse\Helper;
  */
 class Komfortkasse
 {
-    const PLUGIN_VER = '1.9.12';
+    const PLUGIN_VER = '1.9.13';
     const MAXLEN_SSL = 117;
     const LEN_MCRYPT = 16;
 
@@ -733,8 +733,6 @@ class Komfortkasse
             $ret = $ret . "\n" . Komfortkasse::mybase64_encode($encrypted);
         } while ($s);
 
-        if (PHP_VERSION_ID < 80000)
-            openssl_free_key($key);
         return $ret;
 
     }
@@ -770,8 +768,6 @@ class Komfortkasse
             }
         }
 
-        if (PHP_VERSION_ID < 80000)
-            openssl_free_key($key);
         return $ret;
 
     }
@@ -821,7 +817,8 @@ class Komfortkasse
      */
     protected static function kk_csv($s)
     {
-        return '"' . str_replace('"', '', str_replace(';', ',', utf8_encode($s))) . '";';
+        $s = mb_convert_encoding($s, "UTF-8", mb_detect_encoding($s));
+        return '"' . str_replace('"', '', str_replace(';', ',', $s)) . '";';
 
     }
 
