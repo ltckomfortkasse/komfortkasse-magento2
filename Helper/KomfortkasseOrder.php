@@ -284,7 +284,7 @@ class KomfortkasseOrder
                 $ret ['delivery_street'] = self::myutf8_encode($shippingAddress->getStreetFull());
             } elseif (method_exists($shippingAddress, 'getStreet')) {
                 $street = $shippingAddress->getStreet();
-                $ret ['delivery_street'] = self::myutf8_encode($street [0]);
+                $ret['delivery_street'] = self::myutf8_encode(trim(implode(' ', (array)$street)));
             }
             $ret ['delivery_postcode'] = self::myutf8_encode($shippingAddress->getPostcode());
             $ret ['delivery_city'] = self::myutf8_encode($shippingAddress->getCity());
@@ -302,7 +302,7 @@ class KomfortkasseOrder
                 $ret ['billing_street'] = self::myutf8_encode($billingAddress->getStreetFull());
             } elseif (method_exists($billingAddress, 'getStreet')) {
                 $street = $billingAddress->getStreet();
-                $ret ['billing_street'] = self::myutf8_encode($street [0]);
+                $ret['billing_street'] = self::myutf8_encode(trim(implode(' ', (array)$street)));
             }
             $ret ['billing_postcode'] = self::myutf8_encode($billingAddress->getPostcode());
             $ret ['billing_city'] = self::myutf8_encode($billingAddress->getCity());
