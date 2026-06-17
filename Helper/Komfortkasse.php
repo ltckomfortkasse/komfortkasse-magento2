@@ -12,7 +12,7 @@ namespace Ltc\Komfortkasse\Helper;
  */
 class Komfortkasse
 {
-    const PLUGIN_VER = '1.9.14';
+    const PLUGIN_VER = '1.9.15';
     const MAXLEN_SSL = 117;
     const LEN_MCRYPT = 16;
 
@@ -341,7 +341,7 @@ class Komfortkasse
 
                 $newstatus = Komfortkasse::getNewStatus($status, $order);
                 if (empty($newstatus) === true) {
-                    if ($status == 'PAID' && method_exists(KomfortkasseOrder, 'setPaid')) {
+                    if ($status == 'PAID' && method_exists('KomfortkasseOrder', 'setPaid')) {
                         KomfortkasseOrder::setPaid($order, $callbackid);
                         $o = $o . Komfortkasse::kk_csv($id);
                     }
