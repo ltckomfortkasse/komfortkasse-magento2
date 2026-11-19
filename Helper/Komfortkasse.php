@@ -345,10 +345,6 @@ class Komfortkasse
 
                 $newstatus = Komfortkasse::getNewStatus($status, $order);
                 if (empty($newstatus) === true) {
-                    if ($status == 'PAID' && method_exists('KomfortkasseOrder', 'setPaid')) {
-                        KomfortkasseOrder::setPaid($order, $callbackid);
-                        $o = $o . Komfortkasse::kk_csv($id);
-                    }
                     continue;
                 }
 
@@ -433,11 +429,7 @@ class Komfortkasse
         }
         // See if order is relevant.
         if (!self::isOpen($order)) {
-            KomfortkasseConfig::log('notifyorder END: order not open (1)');
-            return;
-        }
-        if (method_exists ('KomfortkasseOrder', 'isOpen') && !KomfortkasseOrder::isOpen($order)) {
-            KomfortkasseConfig::log('notifyorder END: order not open (2)');
+            KomfortkasseConfig::log('notifyorder END: order not open');
             return;
         }
 

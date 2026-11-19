@@ -248,8 +248,9 @@ class KomfortkasseOrder
                 return null;
         }
 
+        // locale of the order's store view, not of the store that handles the request
         $conf_general = $om->get('\Magento\Framework\App\Config\ScopeConfigInterface')->getValue('general',
-                \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $order->getStoreId());
 
         $ret = [ ];
         $ret ['number'] = $order->getIncrementId();
@@ -419,7 +420,15 @@ class KomfortkasseOrder
 
             if ($invoiceColl->getSize() > 0) {
                 foreach ($order->getInvoiceCollection() as $invoice) {
-                    $invoice->pay();
+                    // a canceled invoice stays canceled
+                    if ($invoice->getState() == \Magento\Sales\Model\Order\Invoice::STATE_CANCELED) {
+                        continue;
+                    }
+                    // pay only open invoices: with more than one invoice, pay() adds the invoice
+                    // amount to the order's total paid again, even if the invoice was already paid
+                    if ($invoice->getState() == \Magento\Sales\Model\Order\Invoice::STATE_OPEN) {
+                        $invoice->pay();
+                    }
                     $invoice->addComment($callbackid, false, false);
                     self::mysave($invoice);
                 }

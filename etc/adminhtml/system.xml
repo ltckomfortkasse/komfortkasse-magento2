@@ -49,12 +49,12 @@
         <field id="status_paid_invoice" translate="label" type="select" sortOrder="150" showInDefault="1" showInWebsite="1" showInStore="1">
           <label>Invoice: Status Paid</label>
           <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
-          <comment>Order state that should be set when a invoice has been received for a prepayment order</comment>
+          <comment>Order state that should be set when a payment has been received for an invoice order</comment>
         </field>
         <field id="status_cancelled_invoice" translate="label" type="select" sortOrder="160" showInDefault="1" showInWebsite="1" showInStore="1">
           <label>Invoice: Status no payment/debt collection</label>
           <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
-          <comment>Order state that should be set when a invoice order has not been paid</comment>
+          <comment>Order state that should be set when an invoice order has not been paid</comment>
         </field>
         
         <field id="payment_methods_cod" translate="label" type="multiselect" sortOrder="230" showInDefault="1" showInWebsite="1" showInStore="1">
