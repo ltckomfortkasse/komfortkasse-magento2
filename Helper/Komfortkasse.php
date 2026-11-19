@@ -441,21 +441,39 @@ class Komfortkasse
             return;
         }
 
+        // Without the https stream wrapper (no openssl extension) skip the notification
+        // instead of falling back to plain HTTP; Komfortkasse still picks the order up
+        // on its regular sync.
+        if (!in_array('https', stream_get_wrappers())) {
+            KomfortkasseConfig::log('notifyorder END: no https stream wrapper');
+            return;
+        }
+
         $queryRaw = http_build_query($order);
 
         $queryEnc = Komfortkasse::kkencrypt($queryRaw);
+        if ($queryEnc === false) {
+            KomfortkasseConfig::log('notifyorder END: encryption failed');
+            return;
+        }
 
         $query = http_build_query(array ('q' => $queryEnc,'hash' => KomfortkasseConfig::getConfig(KomfortkasseConfig::accesscode, $order),'key' => KomfortkasseConfig::getConfig(KomfortkasseConfig::apikey, $order)
         ));
 
-        $contextData = array ('method' => 'POST','timeout' => 2,'header' => "Content-Type: application/x-www-form-urlencoded\r\n". "Connection: close\r\n" . 'Content-Length: ' . strlen($query) . "\r\n",'content' => $query
+        // no redirects: a 307/308 would resend the POST body (incl. API key) elsewhere
+        $contextData = array ('method' => 'POST','timeout' => 2,'follow_location' => 0,'header' => "Content-Type: application/x-www-form-urlencoded\r\n". "Connection: close\r\n" . 'Content-Length: ' . strlen($query) . "\r\n",'content' => $query
         );
 
-        $context = stream_context_create(array ('http' => $contextData
+        $sslData = array ('verify_peer' => true,'verify_peer_name' => true,'peer_name' => 'ssl.komfortkasse.eu'
+        );
+
+        $context = stream_context_create(array ('http' => $contextData,'ssl' => $sslData
         ));
 
-        // Development: http://localhost:8080/kkos01/api...
-        $result = file_get_contents('https://ssl.komfortkasse.eu/api/shop/neworder.jsf', false, $context);
+        // Runs inside the order save transaction: a failed request must never surface as an
+        // exception (Magento turns warnings into exceptions), or the order save is rolled back.
+        $result = @file_get_contents('https://ssl.komfortkasse.eu/api/shop/neworder.jsf', false, $context);
+        KomfortkasseConfig::log('notifyorder END: ' . ($result === false ? 'request failed' : 'sent'));
     }
 
     // end notifyorder()

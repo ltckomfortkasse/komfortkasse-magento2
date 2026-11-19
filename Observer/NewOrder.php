@@ -21,6 +21,10 @@ class NewOrder extends AbstractRegObserver
         $regName = $this->getRegName($observer);
         if ($regName) {
             $registry = \Magento\Framework\App\ObjectManager::getInstance()->get('\Magento\Framework\Registry');
+            // the order may already have been loaded in this request (NoteOrderStatus)
+            if ($registry->registry($regName) !== null) {
+                $registry->unregister($regName);
+            }
             $registry->register($regName, '_new');
         }
     }

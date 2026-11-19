@@ -25,7 +25,12 @@ class CheckOrderStatus extends AbstractRegObserver
             if ($orderStatus != $observer->getOrder()->getStatus()) {
                 $om = \Magento\Framework\App\ObjectManager::getInstance();
                 $helper = $om->get('\Ltc\Komfortkasse\Helper\Komfortkasse');
-                $helper->notifyorder($observer->getOrder()->getIncrementId());
+                // runs inside the order save transaction: the notification must never
+                // abort (and roll back) the order save
+                try {
+                    $helper->notifyorder($observer->getOrder()->getIncrementId());
+                } catch (\Throwable $e) {
+                }
             }
 
             $registry->unregister($regName);
