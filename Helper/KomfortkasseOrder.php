@@ -351,7 +351,7 @@ class KomfortkasseOrder
         $om = \Magento\Framework\App\ObjectManager::getInstance();
         $resource = $om->get('\Magento\Framework\App\ResourceConnection');
         $id = $resource->getConnection('default')->fetchOne(
-                'SELECT `entity_id` FROM `' . $resource->getTableName('sales_creditmemo') . "` WHERE `increment_id` = '" . $number . "'");
+                'SELECT `entity_id` FROM `' . $resource->getTableName('sales_creditmemo') . '` WHERE `increment_id` = ?', [ (string) $number ]);
 
         $creditMemo = $om->create('\Magento\Sales\Model\Order\Creditmemo')->load($id);
         if (empty($number) === true || empty($creditMemo) === true || $number != $creditMemo->getIncrementId()) {
@@ -486,7 +486,7 @@ class KomfortkasseOrder
 
         $resource = $om->get('\Magento\Framework\App\ResourceConnection');
         $id = $resource->getConnection('default')->fetchOne(
-                'SELECT `entity_id` FROM `' . $resource->getTableName('sales_creditmemo') . "` WHERE `increment_id` = '" . $refundIncrementId . "'");
+                'SELECT `entity_id` FROM `' . $resource->getTableName('sales_creditmemo') . '` WHERE `increment_id` = ?', [ (string) $refundIncrementId ]);
 
         $creditMemo = $om->create('\Magento\Sales\Model\Order\Creditmemo')->load($id);
 

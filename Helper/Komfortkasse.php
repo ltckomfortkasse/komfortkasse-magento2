@@ -12,7 +12,7 @@ namespace Ltc\Komfortkasse\Helper;
  */
 class Komfortkasse
 {
-    const PLUGIN_VER = '1.9.15';
+    const PLUGIN_VER = '1.9.16';
     const MAXLEN_SSL = 117;
     const LEN_MCRYPT = 16;
 
@@ -125,6 +125,10 @@ class Komfortkasse
      */
     public static function test()
     {
+        if (Komfortkasse::check() === false) {
+            return;
+        }
+
         $dec = Komfortkasse::kkdecrypt(KomfortkasseConfig::getRequestParameter('test'));
 
         $enc = Komfortkasse::kkencrypt($dec);
@@ -538,12 +542,11 @@ class Komfortkasse
     public static function check()
     {
         $ac = KomfortkasseConfig::getRequestParameter('accesscode');
-
-        if (!$ac || hash('md5', $ac) !== KomfortkasseConfig::getConfig(KomfortkasseConfig::accesscode)) {
+        if (!is_string($ac) || $ac === '') {
             return false;
-        } else {
-            return true;
         }
+
+        return hash_equals((string) KomfortkasseConfig::getConfig(KomfortkasseConfig::accesscode), hash('md5', $ac));
 
     }
 
@@ -629,7 +632,7 @@ class Komfortkasse
      *
      * @return mixed
      */
-    protected static function kkcrypterror($encryption)
+    protected static function kkcrypterror($encryption = null)
     {
         if (!$encryption) {
             $encryption = KomfortkasseConfig::getConfig(KomfortkasseConfig::encryption);
@@ -891,9 +894,28 @@ class Komfortkasse
     public static function readconfig()
     {
         $key = KomfortkasseConfig::getRequestParameter('confkey');
-        if (strpos($key, 'ACCESSCODE') !== false)
-            return null;
-        if (strpos($key, 'KEY') !== false)
+
+        // Only the non-sensitive Komfortkasse settings Komfortkasse reads (ShopConfiguration on the server).
+        // Before, any Magento config path was accepted (the ACCESSCODE/KEY check was case-sensitive and
+        // missed sales/komfortkasse/privatekey etc.); only the missing return kept the values from leaking.
+        $allowed = array (
+                KomfortkasseConfig::activate_export,
+                KomfortkasseConfig::activate_update,
+                KomfortkasseConfig::payment_methods,
+                KomfortkasseConfig::status_open,
+                KomfortkasseConfig::status_paid,
+                KomfortkasseConfig::status_cancelled,
+                KomfortkasseConfig::payment_methods_invoice,
+                KomfortkasseConfig::status_open_invoice,
+                KomfortkasseConfig::status_paid_invoice,
+                KomfortkasseConfig::status_cancelled_invoice,
+                KomfortkasseConfig::payment_methods_cod,
+                KomfortkasseConfig::status_open_cod,
+                KomfortkasseConfig::status_paid_cod,
+                KomfortkasseConfig::status_cancelled_cod,
+                KomfortkasseConfig::encryption
+        );
+        if (!in_array($key, $allowed, true))
             return null;
 
         $storeid = KomfortkasseConfig::getRequestParameter('storeid');
@@ -902,7 +924,7 @@ class Komfortkasse
         if ($storeid)
             $order ['store_id'] = $storeid;
 
-        KomfortkasseConfig::output(KomfortkasseConfig::getConfig($key, $order));
+        return KomfortkasseConfig::output(KomfortkasseConfig::getConfig($key, $order));
     }
 
 }

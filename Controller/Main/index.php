@@ -64,7 +64,8 @@ class Index extends \Magento\Framework\App\Action\Action
                     $this->getResponse()->setBody($helper->readconfig());
                     break;
                 default:
-                    $this->getResponse()->setBody("Error: Unknwon action: $action");
+                    // do not echo the request parameter back (reflected XSS)
+                    $this->getResponse()->setBody("Error: unknown action");
             }
         }
     }

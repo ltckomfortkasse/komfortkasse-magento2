@@ -88,9 +88,10 @@ class KomfortkasseConfig
      */
     public static function getRequestParameter($key)
     {
-        return urldecode(
-                \Magento\Framework\App\ObjectManager::getInstance()->get('\Magento\Framework\App\Request\Http')->getParam(
-                        $key));
+        $value = \Magento\Framework\App\ObjectManager::getInstance()->get('\Magento\Framework\App\Request\Http')->getParam(
+                $key);
+        // only string parameters; arrays would cause a TypeError in urldecode()
+        return is_string($value) ? urldecode($value) : '';
     }
 
     // end getRequestParameter()
