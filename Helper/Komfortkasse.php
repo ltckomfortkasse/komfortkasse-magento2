@@ -12,7 +12,7 @@ namespace Ltc\Komfortkasse\Helper;
  */
 class Komfortkasse
 {
-    const PLUGIN_VER = '1.9.17';
+    const PLUGIN_VER = '1.9.18';
     const MAXLEN_SSL = 117;
     const LEN_MCRYPT = 16;
 
@@ -463,8 +463,13 @@ class Komfortkasse
         ));
 
         // Runs inside the order save transaction: a failed request must never surface as an
-        // exception (Magento turns warnings into exceptions), or the order save is rolled back.
-        $result = @file_get_contents('https://ssl.komfortkasse.eu/api/shop/neworder.jsf', false, $context);
+        // exception, or the order save is rolled back. Magento turns the warning of a failed
+        // request into an exception, which is caught here.
+        try {
+            $result = file_get_contents('https://ssl.komfortkasse.eu/api/shop/neworder.jsf', false, $context);
+        } catch (\Throwable $e) {
+            $result = false;
+        }
         KomfortkasseConfig::log('notifyorder END: ' . ($result === false ? 'request failed' : 'sent'));
     }
 
